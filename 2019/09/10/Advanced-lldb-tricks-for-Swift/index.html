@@ -55,19 +55,16 @@
   };
 </script>
 
-  <meta name="description" content="&amp;lt; !–more–&amp;gt;为了避免阅读障碍，下文中我们会把property成为属性，method称为方法。Xcode为lldb命令提供了一些视觉抽象，比如，通过点击代码的行号添加断点，还可以通过点击运行按钮去执行程序。lldb还有一些很有用的命令，现在还没有出现在xcode的UI里。这些命令可以通过在运行时去创建method，改变CPU的寄存器来强行的让你的app不用重新编辑就可以执行一些特">
-<meta name="keywords" content="lldb swift">
+  <meta name="keywords" content="lldb swift">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LLDB调试Swift-进阶">
 <meta property="og:url" content="http://yoursite.com/2019/09/10/Advanced-lldb-tricks-for-Swift/index.html">
 <meta property="og:site_name" content="Sean">
-<meta property="og:description" content="&amp;lt; !–more–&amp;gt;为了避免阅读障碍，下文中我们会把property成为属性，method称为方法。Xcode为lldb命令提供了一些视觉抽象，比如，通过点击代码的行号添加断点，还可以通过点击运行按钮去执行程序。lldb还有一些很有用的命令，现在还没有出现在xcode的UI里。这些命令可以通过在运行时去创建method，改变CPU的寄存器来强行的让你的app不用重新编辑就可以执行一些特">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://static.kyleduo.com/blog/image/razer-mamba/cover.png">
-<meta property="og:updated_time" content="2019-09-10T10:00:50.341Z">
+<meta property="og:updated_time" content="2019-09-10T10:02:15.577Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LLDB调试Swift-进阶">
-<meta name="twitter:description" content="&amp;lt; !–more–&amp;gt;为了避免阅读障碍，下文中我们会把property成为属性，method称为方法。Xcode为lldb命令提供了一些视觉抽象，比如，通过点击代码的行号添加断点，还可以通过点击运行按钮去执行程序。lldb还有一些很有用的命令，现在还没有出现在xcode的UI里。这些命令可以通过在运行时去创建method，改变CPU的寄存器来强行的让你的app不用重新编辑就可以执行一些特">
 <meta name="twitter:image" content="https://static.kyleduo.com/blog/image/razer-mamba/cover.png">
   <link rel="canonical" href="http://yoursite.com/2019/09/10/Advanced-lldb-tricks-for-Swift/">
 
@@ -238,7 +235,7 @@
                 
               
 
-              <time title="创建时间：2019-09-10 17:16:25 / 修改时间：18:00:50" itemprop="dateCreated datePublished" datetime="2019-09-10T17:16:25+08:00">2019-09-10</time>
+              <time title="创建时间：2019-09-10 17:16:25 / 修改时间：18:02:15" itemprop="dateCreated datePublished" datetime="2019-09-10T17:16:25+08:00">2019-09-10</time>
             </span>
           
             
@@ -257,10 +254,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img src="https://static.kyleduo.com/blog/image/razer-mamba/cover.png" alt></p><p>&lt; !–more–&gt;</p><p>为了避免阅读障碍，下文中我们会把<code>property</code>成为<code>属性</code>，<code>method</code>称为<code>方法</code>。</p><p>Xcode为lldb命令提供了一些视觉抽象，比如，通过点击代码的行号添加断点，还可以通过点击运行按钮去执行程序。lldb还有一些很有用的命令，现在还没有出现在xcode的UI里。这些命令可以通过在运行时去创建method，改变CPU的寄存器来强行的让你的app不用重新编辑就可以执行一些特殊的流程。了解这些命令，可以大大提升你的调试经验。</p><a id="more"></a>
+        <p><img src="https://static.kyleduo.com/blog/image/razer-mamba/cover.png" alt></p>
+<a id="more"></a>
 
-
-
+<p>为了避免阅读障碍，下文中我们会把<code>property</code>成为<code>属性</code>，<code>method</code>称为<code>方法</code>。</p>
+<p>Xcode为lldb命令提供了一些视觉抽象，比如，通过点击代码的行号添加断点，还可以通过点击运行按钮去执行程序。lldb还有一些很有用的命令，现在还没有出现在xcode的UI里。这些命令可以通过在运行时去创建method，改变CPU的寄存器来强行的让你的app不用重新编辑就可以执行一些特殊的流程。了解这些命令，可以大大提升你的调试经验。</p>
 <p>不是所有的Swift相关的工作都需要在Xcode上开发，比如Swift的编译器或者苹果的SourceKit-LSP用其他方式工作可能会更好，这意味着这些通常需要手动使用lldb命令。没有Xcode协助你，这些lldb技巧可以帮助你在不用再次编译app的情况下，来确认你的更改。</p>
 <p>##注入属性(properties)和方法(methods)</p>
 <p>你可能已经知道了<code>po</code>(print object的缩写)，这个友好的命令通常用来打印一些属性的内容：</p>
