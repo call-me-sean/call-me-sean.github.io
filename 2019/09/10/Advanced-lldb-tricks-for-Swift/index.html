@@ -55,18 +55,21 @@
   };
 </script>
 
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+  <meta name="description" content="&amp;lt; !–more–&amp;gt;为了避免阅读障碍，下文中我们会把property成为属性，method称为方法。 Xcode为lldb命令提供了一些视觉抽象，比如，通过点击代码的行号添加断点，还可以通过点击运行按钮去执行程序。lldb还有一些很有用的命令，现在还没有出现在xcode的UI里。这些命令可以通过在运行时去创建method，改变CPU的寄存器来强行的让你的app不用重新编辑就可以执行一些">
+<meta name="keywords" content="lldb swift">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2019/09/10/hello-world/index.html">
+<meta property="og:title" content="LLDB调试Swift-进阶">
+<meta property="og:url" content="http://yoursite.com/2019/09/10/Advanced-lldb-tricks-for-Swift/index.html">
 <meta property="og:site_name" content="Sean">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="&amp;lt; !–more–&amp;gt;为了避免阅读障碍，下文中我们会把property成为属性，method称为方法。 Xcode为lldb命令提供了一些视觉抽象，比如，通过点击代码的行号添加断点，还可以通过点击运行按钮去执行程序。lldb还有一些很有用的命令，现在还没有出现在xcode的UI里。这些命令可以通过在运行时去创建method，改变CPU的寄存器来强行的让你的app不用重新编辑就可以执行一些">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-09-10T08:48:40.895Z">
+<meta property="og:image" content="https://static.kyleduo.com/blog/image/razer-mamba/cover.png">
+<meta property="og:updated_time" content="2019-09-10T09:26:26.585Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
-  <link rel="canonical" href="http://yoursite.com/2019/09/10/hello-world/">
+<meta name="twitter:title" content="LLDB调试Swift-进阶">
+<meta name="twitter:description" content="&amp;lt; !–more–&amp;gt;为了避免阅读障碍，下文中我们会把property成为属性，method称为方法。 Xcode为lldb命令提供了一些视觉抽象，比如，通过点击代码的行号添加断点，还可以通过点击运行按钮去执行程序。lldb还有一些很有用的命令，现在还没有出现在xcode的UI里。这些命令可以通过在运行时去创建method，改变CPU的寄存器来强行的让你的app不用重新编辑就可以执行一些">
+<meta name="twitter:image" content="https://static.kyleduo.com/blog/image/razer-mamba/cover.png">
+  <link rel="canonical" href="http://yoursite.com/2019/09/10/Advanced-lldb-tricks-for-Swift/">
 
 
 <script id="page-configurations">
@@ -80,7 +83,7 @@
   };
 </script>
 
-  <title>Hello World | Sean</title>
+  <title>LLDB调试Swift-进阶 | Sean</title>
   <meta name="generator" content="Hexo 3.9.0">
   
 
@@ -207,7 +210,7 @@
   
   
   <div class="post-block post">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/10/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/10/Advanced-lldb-tricks-for-Swift/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Sean Xue">
@@ -219,7 +222,7 @@
       <meta itemprop="name" content="Sean">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">Hello World
+        <h1 class="post-title" itemprop="name headline">LLDB调试Swift-进阶
 
           
         </h1>
@@ -235,8 +238,12 @@
                 
               
 
-              <time title="创建时间：2019-09-10 16:48:40" itemprop="dateCreated datePublished" datetime="2019-09-10T16:48:40+08:00">2019-09-10</time>
+              <time title="创建时间：2019-09-10 17:16:25 / 修改时间：17:26:26" itemprop="dateCreated datePublished" datetime="2019-09-10T17:16:25+08:00">2019-09-10</time>
             </span>
+          
+            
+
+            
           
 
           
@@ -250,19 +257,27 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+        <p><img src="https://static.kyleduo.com/blog/image/razer-mamba/cover.png" alt><br>&lt; !–more–&gt;<br>为了避免阅读障碍，下文中我们会把<code>property</code>成为<code>属性</code>，<code>method</code>称为<code>方法</code>。</p>
+<p>Xcode为lldb命令提供了一些视觉抽象，比如，通过点击代码的行号添加断点，还可以通过点击运行按钮去执行程序。lldb还有一些很有用的命令，现在还没有出现在xcode的UI里。这些命令可以通过在运行时去创建method，改变CPU的寄存器来强行的让你的app不用重新编辑就可以执行一些特殊的流程。了解这些命令，可以大大提升你的调试经验。</p>
+<p>不是所有的Swift相关的工作都需要在Xcode上开发，比如Swift的编译器或者苹果的SourceKit-LSP用其他方式工作可能会更好，这意味着这些通常需要手动使用lldb命令。没有Xcode协助你，这些lldb技巧可以帮助你在不用再次编译app的情况下，来确认你的更改。</p>
+<p>##注入属性(properties)和方法(methods)</p>
+<p>你可能已经知道了<code>po</code>(print object的缩写)，这个友好的命令通常用来打印一些属性的内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">func foo() &#123;</span><br><span class="line">    var myProperty = 0</span><br><span class="line">&#125; // a breakpoint（断点）</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p><code>po</code>的功能不仅仅是打印属性的内容，尽管它的名字就是打印对象。<code>po</code>是<code>expression --object-description --</code>的别名（alias）。他是<code>expression</code>（也就是 <code>e</code>）的增强实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">po myProperty</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>因为<code>po</code>是<code>expression</code>（也就是 <code>e</code>）的别名（alias），所以他能做<code>e</code>能做的所有事。<code>e</code>是<code>执行表示式</code>（evaluating expressions）的意思。<code>e</code>可以打印属性或者改变属性的值，甚至可以定义一个新的类。作为一个简单的应用，我们可以改变属性的值，来让程序在不用重新编译的情况下，强行执行另一种逻辑。</p>
+<p>除此之外，你可以通过只写了一个<code>po</code>，去写一个多行的表达式,，我们可以去创建一个新的方法或者一个类在我们调试的时候。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">po</span><br><span class="line">Enter expressions, then terminate with an empty line to evaluate:</span><br><span class="line">1 class $BreakpointUtils &#123;</span><br><span class="line">2     static var $counter = 0</span><br><span class="line">3 &#125;</span><br><span class="line">4 func $increaseCounter() &#123;</span><br><span class="line">5     $BreakpointUtils.$counter += 1</span><br><span class="line">6     print(&quot;Times I&apos;ve hit this breakpoint: \($BreakpointUtils.$counter)&quot;)</span><br><span class="line">7 &#125;</span><br><span class="line">8</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>（这里<code>$</code>来表示这些属性和方法只属于lldb，而不是实际的代码。）</p>
+<p>上一个🌰允许我们直接通过lldb调用<code>$increaseCounter()</code>，他会给counter+1.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">po $increaseCounter()</span><br><span class="line">Times I&apos;ve hit this breakpoint: 1</span><br><span class="line">po $increaseCounter()</span><br><span class="line">Times I&apos;ve hit this breakpoint: 2</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a><br>balabala</p>
+<p>虽然上面的能力能够通过引入插件来绑定到lldb上，但是我们这样直接实现可以提升我们自己的调试能力。<a href="https://github.com/facebook/chisel" target="_blank" rel="noopener">Chisel</a>就是一个很好的例子，Chisel是Facebook开发的工具，它包含了很多lldb的插件。比如<code>border</code>命令，他可以给<code>UIView</code>添加上明亮的边界，借此，你可以很快的定位到屏幕上的某个<code>View</code>，他们都是通过<code>e</code>/<code>po</code>来实现的。</p>
+<p>你可以通lldb的断点行为去自动的触发这些方法，只要断点命中就会触发这些方法。结合<code>po</code>改变属性的能力，你还可以创造一些特殊的断点，去改变app的执行流程，测试你想要测试的流程。</p>
+<p>通常来讲，所有进阶断点命令在使用起来都很痛苦（这就是为什么我在本文中会避免使用它们），感恩</p>
 
     </div>
 
@@ -273,21 +288,30 @@
       
 
       <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/lldb-swift/" rel="tag"># lldb swift</a>
+            
+          </div>
+        
 
         
 
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
+                <a href="/2019/09/10/hello-world/" rel="next" title="Hello World">
+                  <i class="fa fa-chevron-left"></i> Hello World
+                </a>
+              
             </div>
 
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/09/10/Advanced-lldb-tricks-for-Swift/" rel="prev" title="LLDB调试Swift-进阶">
-                  LLDB调试Swift-进阶 <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -336,8 +360,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
-        
       </div>
       <!--/noindex-->
 
