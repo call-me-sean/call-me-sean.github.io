@@ -55,28 +55,34 @@
   };
 </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Sean">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="Xcode为lldb命令提供了一些视觉抽象，比如，通过点击代码的行号添加断点，还可以通过点击运行按钮去执行程序。lldb还有一些很有用的命令，现在还没有出现在xcode的UI里。这些命令可以通过在运行时去创建method，改变CPU的寄存器来强行的让你的app不用重新编辑就可以执行一些特殊的流程。了解这些命令，可以大大提升你的调试经验。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="test for picture">
+<meta property="og:url" content="http://yoursite.com/2019/09/11/test/index.html">
 <meta property="og:site_name" content="Sean">
+<meta property="og:description" content="Xcode为lldb命令提供了一些视觉抽象，比如，通过点击代码的行号添加断点，还可以通过点击运行按钮去执行程序。lldb还有一些很有用的命令，现在还没有出现在xcode的UI里。这些命令可以通过在运行时去创建method，改变CPU的寄存器来强行的让你的app不用重新编辑就可以执行一些特殊的流程。了解这些命令，可以大大提升你的调试经验。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/09/cover.png">
+<meta property="og:updated_time" content="2019-09-11T04:06:38.182Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sean">
-  <link rel="canonical" href="http://yoursite.com/">
+<meta name="twitter:title" content="test for picture">
+<meta name="twitter:description" content="Xcode为lldb命令提供了一些视觉抽象，比如，通过点击代码的行号添加断点，还可以通过点击运行按钮去执行程序。lldb还有一些很有用的命令，现在还没有出现在xcode的UI里。这些命令可以通过在运行时去创建method，改变CPU的寄存器来强行的让你的app不用重新编辑就可以执行一些特殊的流程。了解这些命令，可以大大提升你的调试经验。">
+<meta name="twitter:image" content="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/09/cover.png">
+  <link rel="canonical" href="http://yoursite.com/2019/09/11/test/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome: true,
-    isPost: false,
+    isHome: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>Sean</title>
+  <title>test for picture | Sean</title>
   <meta name="generator" content="Hexo 3.9.0">
   
 
@@ -196,12 +202,13 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
+
   <div id="posts" class="posts-expand">
-        <article itemscope itemtype="http://schema.org/Article">
+      <article itemscope itemtype="http://schema.org/Article">
   
   
   
-  <div class="post-block home">
+  <div class="post-block post">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/11/test/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -214,9 +221,8 @@
       <meta itemprop="name" content="Sean">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/09/11/test/" class="post-title-link" itemprop="url">test for picture</a>
+        <h1 class="post-title" itemprop="name headline">test for picture
+
           
         </h1>
 
@@ -250,204 +256,67 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/09/cover.png" alt="cove"></p>
+        <p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/09/cover.png" alt="cove"></p>
 <p>Xcode为lldb命令提供了一些视觉抽象，比如，通过点击代码的行号添加断点，还可以通过点击运行按钮去执行程序。lldb还有一些很有用的命令，现在还没有出现在xcode的UI里。这些命令可以通过在运行时去创建method，改变CPU的寄存器来强行的让你的app不用重新编辑就可以执行一些特殊的流程。了解这些命令，可以大大提升你的调试经验。</p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/09/11/test/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
+<a id="more"></a>
+
+<p>不是所有的Swift相关的工作都需要在Xcode上开发，比如Swift的编译器或者苹果的SourceKit-LSP用其他方式工作可能会更好，这意味着这些通常需要手动使用lldb命令。没有Xcode协助你，这些lldb技巧可以帮助你在不用再次编译app的情况下，来确认你的更改。</p>
+<p>##注入属性(properties)和方法(methods)</p>
+<p>你可能已经知道了<code>po</code>(print object的缩写)，这个友好的命令通常用来打印一些属性的内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">func foo() &#123;</span><br><span class="line">    var myProperty = 0</span><br><span class="line">&#125; // a breakpoint（断点）</span><br></pre></td></tr></table></figure>
+
+<p><code>po</code>的功能不仅仅是打印属性的内容，尽管它的名字就是打印对象。<code>po</code>是<code>expression --object-description --</code>的别名（alias）。他是<code>expression</code>（也就是 <code>e</code>）的增强实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">po myProperty</span><br><span class="line">0</span><br></pre></td></tr></table></figure>
+
+<p>因为<code>po</code>是<code>expression</code>（也就是 <code>e</code>）的别名（alias），所以他能做<code>e</code>能做的所有事。<code>e</code>是<code>执行表示式</code>（evaluating expressions）的意思。<code>e</code>可以打印属性或者改变属性的值，甚至可以定义一个新的类。作为一个简单的应用，我们可以改变属性的值，来让程序在不用重新编译的情况下，强行执行另一种逻辑。</p>
+<p>除此之外，你可以通过只写了一个<code>po</code>，去写一个多行的表达式,，我们可以去创建一个新的方法或者一个类在我们调试的时候。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">po</span><br><span class="line">Enter expressions, then terminate with an empty line to evaluate:</span><br><span class="line">1 class $BreakpointUtils &#123;</span><br><span class="line">2     static var $counter = 0</span><br><span class="line">3 &#125;</span><br><span class="line">4 func $increaseCounter() &#123;</span><br><span class="line">5     $BreakpointUtils.$counter += 1</span><br><span class="line">6     print(&quot;Times I&apos;ve hit this breakpoint: \($BreakpointUtils.$counter)&quot;)</span><br><span class="line">7 &#125;</span><br><span class="line">8</span><br></pre></td></tr></table></figure>
+
+<p>（这里<code>$</code>来表示这些属性和方法只属于lldb，而不是实际的代码。）</p>
+<p>上一个🌰允许我们直接通过lldb调用<code>$increaseCounter()</code>，他会给counter+1.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">po $increaseCounter()</span><br><span class="line">Times I&apos;ve hit this breakpoint: 1</span><br><span class="line">po $increaseCounter()</span><br><span class="line">Times I&apos;ve hit this breakpoint: 2</span><br></pre></td></tr></table></figure>
+
+<p>虽然上面的能力能够通过引入插件来绑定到lldb上，但是我们这样直接实现可以提升我们自己的调试能力。<a href="https://github.com/facebook/chisel" target="_blank" rel="noopener">Chisel</a>就是一个很好的例子，Chisel是Facebook开发的工具，它包含了很多lldb的插件。比如<code>border</code>命令，他可以给<code>UIView</code>添加上明亮的边界，借此，你可以很快的定位到屏幕上的某个<code>View</code>，他们都是通过<code>e</code>/<code>po</code>来实现的。</p>
+<p>你可以通lldb的断点行为去自动的触发这些方法，只要断点命中就会触发这些方法。结合<code>po</code>改变属性的能力，你还可以创造一些特殊的断点，去改变app的执行流程，测试你想要测试的流程。</p>
+<p>通常来讲，所有进阶断点命令在使用起来都很痛苦（这就是为什么我在本文中会避免使用它们），感恩</p>
+
     </div>
 
     
     
     
+        
+      
+
       <footer class="post-footer">
-          <div class="post-eof"></div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/09/10/Advanced-lldb-tricks-for-Swift/" rel="next" title="LLDB调试Swift-进阶">
+                  <i class="fa fa-chevron-left"></i> LLDB调试Swift-进阶
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
         
       </footer>
+    
   </div>
   
   
   
   </article>
 
-    
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/10/Advanced-lldb-tricks-for-Swift/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sean Xue">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sean">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/09/10/Advanced-lldb-tricks-for-Swift/" class="post-title-link" itemprop="url">LLDB调试Swift-进阶</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              
-                
-              
-
-              <time title="创建时间：2019-09-10 17:16:25" itemprop="dateCreated datePublished" datetime="2019-09-10T17:16:25+08:00">2019-09-10</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-09-11 12:02:51" itemprop="dateModified" datetime="2019-09-11T12:02:51+08:00">2019-09-11</time>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="https://static.kyleduo.com/blog/image/razer-mamba/cover.png" alt></p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/09/10/Advanced-lldb-tricks-for-Swift/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
   </div>
-  
-  
-  
-  </article>
-
-    
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/10/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sean Xue">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Sean">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/09/10/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              
-                
-              
-
-              <time title="创建时间：2019-09-10 16:48:40" itemprop="dateCreated datePublished" datetime="2019-09-10T16:48:40+08:00">2019-09-10</time>
-            </span>
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/09/10/hello-world/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
-  </div>
-
-  
 
 
           </div>
@@ -466,6 +335,11 @@
 
   <aside class="sidebar">
     <div class="sidebar-inner">
+        
+        
+        
+        
+      
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
