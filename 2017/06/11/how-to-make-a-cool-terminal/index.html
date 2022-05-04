@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="我们每天都在使用终端工具，配置的好看些，可以让我们在工作的时候有一个愉悦的心情 :)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="配置一个炫酷的终端">
+<meta property="og:url" content="http://example.com/2017/06/11/how-to-make-a-cool-terminal/index.html">
+<meta property="og:site_name" content="Sean Blog">
+<meta property="og:description" content="我们每天都在使用终端工具，配置的好看些，可以让我们在工作的时候有一个愉悦的心情 :)">
+<meta property="og:locale">
+<meta property="og:image" content="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/09/terminal.png">
+<meta property="og:image" content="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/09/terminal.png">
+<meta property="article:published_time" content="2017-06-11T13:30:02.000Z">
+<meta property="article:modified_time" content="2022-05-04T11:35:27.173Z">
+<meta property="article:author" content="Sean">
+<meta property="article:tag" content="Tool">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/09/terminal.png">
+
+<link rel="canonical" href="http://example.com/2017/06/11/how-to-make-a-cool-terminal/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>配置一个炫酷的终端 | Sean Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Sean Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/06/11/how-to-make-a-cool-terminal/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sean">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sean Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          配置一个炫酷的终端
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-06-11 21:30:02" itemprop="dateCreated datePublished" datetime="2017-06-11T21:30:02+08:00">2017-06-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-05-04 19:35:27" itemprop="dateModified" datetime="2022-05-04T19:35:27+08:00">2022-05-04</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/09/terminal.png" alt="title"></p>
+<p>我们每天都在使用终端工具，配置的好看些，可以让我们在工作的时候有一个愉悦的心情 :)</p>
+<span id="more"></span>
+
+<p>这个终端是<a target="_blank" rel="noopener" href="http://iterm2.com/">iTerm2</a>，<code>MAC OS</code>下一个非常牛逼的终端。顺利通过官网下载安装，然后开始配置过程。</p>
+<h2 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h2><p>按<code>Command + ,</code>打开偏好设定窗口：<code>Profiles / Window</code>，把<code>Settings for New Windows</code>中的Style改成<code>Left of Screen</code>让它在屏幕左侧显示（在宽屏显示器上效果不错） 勾选<code>Hotkey</code>中的<code>Show/hide iTerm2 with a system-wide hotkey</code>，然后设定一个热键。我个人偏爱 <code>Command + ;</code>。 现在按<code>Command + ;</code>.就可以随时调出或者隐藏<code>iTerm2</code>了。 你还可以在<code>Profile</code>中更改字体等，其他的希望大家自己研究。</p>
+<h2 id="配色方案"><a href="#配色方案" class="headerlink" title="配色方案"></a>配色方案</h2><p><a target="_blank" rel="noopener" href="http://ethanschoonover.com/solarized">Solarized</a>可以说是目前网络上最流行的配色解决方案，其优美的配色和众多软件的支持，成就了她现在的火爆。我们这里就使用它来进行<code>iTerm2</code>的配色 下载，解压，打开<code>iTerm2</code>的偏好设定，<code>Profiles / Colors</code>，最下面的<code>Load Presets ... / Import...</code> 直接加载<code>iterm2-colors-solarized/Solarized Dark.itermcolors</code>配色方案就可以了，这时候可以看到。看到效果了。</p>
+<p>其实到这一步，<code>iTerm2</code>看上去已经好多了，但是为了能让它的样子更风骚，我们需要进一步配置。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zsh`和`oh-my-zsh</span><br></pre></td></tr></table></figure>
+
+<p>众所周知在<code>Unix/Linux</code>系统下是存在很多不同的<code>shell</code>，常见的就有<code>bash</code>, <code>csh</code>，<code>ksh</code>，<code>zsh</code>等等。在<code>Linux</code>和<code>MAC OS</code>系统中，默认使用的是<code>bash</code>。这里我们要是功能更加强大的 <code>zsh</code>。这里可以通过<code>Homebrew</code>下载安装<code>zsh</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install zsh</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后，将<code>zsh</code>设置成系统默认<code>shell</code>，以代替<code>bash</code>。 用编辑器打开<code>/etc/shells</code>，在末尾添加<code>/usr/local/bin/zsh</code>,保存关闭。 在终端中执行以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chsh -s /usr/local/bin/zsh</span><br></pre></td></tr></table></figure>
+
+<p>然后重新启动<code>iTerm2</code>，<code>zsh</code>就已经被配置成默认的<code>shell</code>了。</p>
+<p>此时的<code>zsh</code>还是最初始的样子，我们要将其变成强大的终端，需要对其进行配置，为了让<code>zsh</code>产生想上面图片那样的效果，我们需要安装<code>oh-my-zsh</code>。</p>
+<p><code>oh-my-zsh</code>是一个功能强大框架，发布于<code>Github</code>。它可以让你以纯傻瓜的方式对zsh进行配置已得到强大的功能，这里是其<a target="_blank" rel="noopener" href="https://github.com/robbyrussell/oh-my-zsh">发布页面</a>，如果有什么疑问，都可以去这个页面进行查询，里面有最详细的说明。 <code>on-my-zsh</code>的安装支持自动和手动，为了省去麻烦，我建议优先使用自动，如果要使用手动安装，请查看安装说明。这里只说一下自动安装。 在终端里，如果你有<code>curl</code>，则在终端输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -L http://install.ohmyz.sh | sh</span><br></pre></td></tr></table></figure>
+
+<p>如果你使用<code>wget</code>,则在终端输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget --no-check-certificate http://install.ohmyz.sh -O - | sh</span><br></pre></td></tr></table></figure>
+
+<p>这样<code>oh-my-zsh</code>就安装完成了。开始对其进行配置。</p>
+<p><code>zsh</code>的配置几乎都在<code>~/.zshrc</code>下面，用编辑器打开文件，你会看到很多选项，建议你感觉自己的需求进行配置，不懂得可以查询文档。这里我只说一下主题的配置。在<code>~/.oh-my-zsh/themes</code>存在各式各样的主题文件，每个主题的样子你可以通过这个<a target="_blank" rel="noopener" href="https://github.com/robbyrussell/oh-my-zsh/wiki/Themes">网址</a>进行查看，选好样式后，在<code>.zshrc</code>中的<code>ZSH_THEME</code>设置成你所选用的主题。重启<code>iTerm2</code>，便可以看到相应的效果。这里建议使用<code>agnoster</code>，比较好看。</p>
+<p>做完上步后，<code>iTerm2</code>的大概样子应该跟我们的第一张图片差不多了，但是没有图片中的箭头，那是因为产生箭头效果是需要特殊字体支持的，这个字体最开始是一个叫<a target="_blank" rel="noopener" href="https://powerline.readthedocs.org/">Powerline</a>的项目开始的，其目的是美化<code>Vim</code>中操作栏的字体状态使其产生箭头效果，当然这个被移植到了<code>iTerm2</code>上。</p>
+<p>要使用这种字体,需要做如下的事情</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># clone</span><br><span class="line">git clone https://github.com/powerline/fonts.git</span><br><span class="line"># install</span><br><span class="line">cd fonts</span><br><span class="line">./install.sh</span><br><span class="line"># clean-up a bit</span><br><span class="line">cd ..</span><br><span class="line">rm -rf fonts</span><br></pre></td></tr></table></figure>
+
+<p>安装完成之后,需要在<code>iTerm2</code>做如下配置</p>
+<p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/09/terminal.png" alt="Text 配置"></p>
+<p>配置完成之后,最终的效果便跟第一张图片中样式一样了。</p>
+<h2 id="更多的配色方案"><a href="#更多的配色方案" class="headerlink" title="更多的配色方案"></a>更多的配色方案</h2><p><code>Solarized</code>虽然很好，但是使用久了终究会变得平淡，这时候我们要换换主题，<code>Github</code>上有一个项目可以使用非常丰富的主题库，地址在<a target="_blank" rel="noopener" href="https://github.com/mbadolato/iTerm2-Color-Schemes">这里</a>，上面有详细的安装步骤，你可以根据自己的喜好来选择主题了。</p>
+<p>至此，<code>iTerm2</code>的配置告一段落了，其他的，就需要大家在使用中不断的熟悉和配置你的终端了。</p>
+<h2 id="终端的更多配置"><a href="#终端的更多配置" class="headerlink" title="终端的更多配置"></a>终端的更多配置</h2><p>其实 <code>zsh</code>功能比<code>bash</code>好用且强大多了！特别是他的自动补全功能还有自定义功能,还有自动纠错能力，命令颜色高亮等！<a target="_blank" rel="noopener" href="http://www.cnblogs.com/ma6174/archive/2012/05/08/2490921.html">这里</a>提供了一些<code>zsh</code>的配置方案,供大家参考一下</p>
+<p>配置了这么炫酷的终端,在你<code>open</code>一些文件的时候,会使用默认的文本编辑器打开,这会让大家很不爽,比如如果使用默认的文本编辑器编辑<code>Podfile</code> 的时候,会出现一些问题,这时候我们想要把默认的文本编辑器替换成 <code>Sublime</code>,<a target="_blank" rel="noopener" href="http://xiaoyu2er.github.io/2016/01/31/mac-default-app-for-spec-file-type/">这里</a>为大家提功了参考方案</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://laoshuterry.gitbooks.io/mac_os_setup_guide/content/4_ZshConfig.html">https://laoshuterry.gitbooks.io/mac_os_setup_guide/content/4_ZshConfig.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/powerline/fonts/issues/44">https://github.com/powerline/fonts/issues/44</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/ma6174/archive/2012/05/08/2490921.html">http://www.cnblogs.com/ma6174/archive/2012/05/08/2490921.html</a></p>
+<p><a target="_blank" rel="noopener" href="http://xiaoyu2er.github.io/2016/01/31/mac-default-app-for-spec-file-type/">http://xiaoyu2er.github.io/2016/01/31/mac-default-app-for-spec-file-type/</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Tool/" rel="tag"># Tool</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/06/04/effective-Objective-C-one/" rel="prev" title="Effective Objective-C 2.0 笔记(一)">
+      <i class="fa fa-chevron-left"></i> Effective Objective-C 2.0 笔记(一)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/02/14/classes-and-metaclasses/" rel="next" title="classes-and-metaclasses">
+      classes-and-metaclasses <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">基本配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E8%89%B2%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">配色方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E5%A4%9A%E7%9A%84%E9%85%8D%E8%89%B2%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">更多的配色方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%88%E7%AB%AF%E7%9A%84%E6%9B%B4%E5%A4%9A%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">终端的更多配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Sean</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sean</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="MD5本身是不可逆和无冲突的,但是用一些巧妙地方法会被破解出来.一个密码系统的是没有绝对安全的,密码系统只是增加了被破解的代价.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于MD5安全性的讨论">
+<meta property="og:url" content="http://example.com/2017/01/05/md5/index.html">
+<meta property="og:site_name" content="Sean Blog">
+<meta property="og:description" content="MD5本身是不可逆和无冲突的,但是用一些巧妙地方法会被破解出来.一个密码系统的是没有绝对安全的,密码系统只是增加了被破解的代价.">
+<meta property="og:locale">
+<meta property="og:image" content="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/12/md5.PNG">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1401726-32ca4ee535719034.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2017-01-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-04T11:43:34.089Z">
+<meta property="article:author" content="Sean">
+<meta property="article:tag" content="Objectice-C">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/12/md5.PNG">
+
+<link rel="canonical" href="http://example.com/2017/01/05/md5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>关于MD5安全性的讨论 | Sean Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Sean Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/01/05/md5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sean">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sean Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于MD5安全性的讨论
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-01-05 00:00:00" itemprop="dateCreated datePublished" datetime="2017-01-05T00:00:00+08:00">2017-01-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-05-04 19:43:34" itemprop="dateModified" datetime="2022-05-04T19:43:34+08:00">2022-05-04</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/12/md5.PNG" alt="title"></p>
+<p>MD5本身是不可逆和无冲突的,但是用一些巧妙地方法会被破解出来.一个密码系统的是没有绝对安全的,密码系统只是增加了被破解的代价.</p>
+<span id="more"></span>
+
+<h2 id="MD5的常识性知识"><a href="#MD5的常识性知识" class="headerlink" title="MD5的常识性知识"></a>MD5的常识性知识</h2><ul>
+<li>一个密码系统的安全性只在于密钥的保密性，而不在于算法的保密性.</li>
+<li>MD5就是把不论什么长度的文字内容，给精简成128位散列数.不论文字内容只有一个字母a，还是1w多字的长篇论文，都精简（或填充）成128位散列数.</li>
+<li>MD5主要用在文档校验上，用来生成密钥检测文档是否被篡改.</li>
+<li>MD5算法本身是不可被破解的.</li>
+<li>目前没有软件能有效地破解 MD5.大多数时候只是把常见字符串的 MD5 存了起来为彩虹表，通过一定的算法,进行匹配.</li>
+<li>厉害的软件还会在彩虹桥的基础上加入哈希碰撞.</li>
+<li>MD5 目前来说还是可以用的，尤其是考虑到合适的加盐以后可以解决大多数彩虹表带来的危险.<br>所有的不被破解的基础,一定要做到秘钥保密!秘钥保密!秘钥保密!</li>
+</ul>
+<h2 id="一些知识点的补充"><a href="#一些知识点的补充" class="headerlink" title="一些知识点的补充"></a>一些知识点的补充</h2><h3 id="哈希"><a href="#哈希" class="headerlink" title="哈希"></a>哈希</h3><p>Hash，一般翻译做”散列”，也有直接音译为”哈希”的，就是把任意长度的输入（又叫做预映射， pre-image），通过散列算法，变换成固定长度的输出，该输出就是散列值。这种转换是一种压缩映射，也就是，散列值的空间通常远小于输入的空间，不同的输入可能会散列成相同的输出，而不可能从散列值来唯一的确定输入值.<br>简单的说就是一种将任意长度的消息压缩到某一固定长度的信息摘要的函数.<br>HASH主要用于信息安全领域中加密算法，他把一些不同长度的信息转化成杂乱的128位的编码里,叫做HASH值. 也可以说，hash就是找到一种数据内容和数据存放地址之间的映射关系.<br>Hash算法在信息安全方面的应用主要体现在以下的3个方面：</p>
+<ol>
+<li>文件校验<br>我们比较熟悉的校验算法有奇偶校验和CRC校验，这2种校验并没有抗数据篡改的能力，它们一定程度上能检测并纠正数据传输中的信道误码，但却不能防止对数据的恶意破坏.<br>MD5 Hash算法的”数字指纹”特性，使它成为目前应用最广泛的一种文件完整性校验和(Checksum)算法，不少Unix系统有提供计算md5 checksum的命令.</li>
+<li>数字签名<br>Hash 算法也是现代密码体系中的一个重要组成部分。由于非对称算法的运算速度较慢，所以在数字签名协议中，单向散列函数扮演了一个重要的角色。 对 Hash 值，又称”数字摘要”进行数字签名，在统计上可以认为与对文件本身进行数字签名是等效的.而且这样的协议还有其他的优点.</li>
+<li>鉴权协议<br>如下的鉴权协议又被称作”挑战–认证模式：在传输信道是可被侦听，但不可被篡改的情况下，这是一种简单而安全的方法.</li>
+</ol>
+<p><strong>-以上解释摘自百度</strong></p>
+<h3 id="彩虹表"><a href="#彩虹表" class="headerlink" title="彩虹表"></a>彩虹表</h3><p>如果将哈希后的密文比作一把锁，暴力破解的方法就是现场制作各种各样不同齿形的钥匙，再来尝试能否开锁，这样耗时无疑很长；我以前错误理解的“彩虹表”，是事先制作好所有齿形的钥匙，全部拿过来尝试开锁，这样虽然省去了制作钥匙的时间，但是后来发现这些钥匙实在是太多了，没法全部带在身上。而真正的彩虹表，是将钥匙按照某种规律进行分组，每组钥匙中只需要带最有特点的一个，当发现某个“特征钥匙”差一点就能开锁了，则当场对该钥匙进行简单的打磨，直到能开锁为止。这种方法是既省力又省时的.</p>
+<h3 id="哈希碰撞"><a href="#哈希碰撞" class="headerlink" title="哈希碰撞"></a>哈希碰撞</h3><p>哈希碰撞就是一种优化过算法,其基本原理就是把密码明文对应的MD5与你的MD5进行对比,因为经过一些优化,所以无论是时间上,还是空间都很很快.其优化方法我也没研究过,不过感兴趣的可以查一下王小云教授关于哈希碰撞的论文.</p>
+<h2 id="常用破解MD5方法"><a href="#常用破解MD5方法" class="headerlink" title="常用破解MD5方法"></a>常用破解MD5方法</h2><p>目前来说,破解MD5加密的最有效的方法就是 <strong>哈希碰撞+彩虹表+对应秘钥</strong>,一些网络黑客会在一些明文存储用户密码的网站上窃取信息,假如黑客有一亿条数据,因为都是真实用户所以经过哈希碰撞之后,你的密码被破译出来的几率就真的非常大了,那破译不出来的可能就是因为大小写和一些特殊符号,这就用到了彩虹表,最后就是你的秘钥,比如你是之前对用户的密码进行加盐,还是之后对MD5之后的字符串进行的特殊处理,只要对方知道你的秘钥,那么你密码被破译出来的几率就非常非常高了,所以我们说: <strong>一个密码系统的安全性只在于密钥的保密性，而不在于算法的保密性.</strong></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>MD5本身是不可逆和无冲突的,但是用一些巧妙地方法会被破解出来.一个密码系统的是没有绝对安全的,密码系统只是增加了被破解的代价.</p>
+<p>PS:一切明文存储用户密码的网站都是耍流氓!</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-32ca4ee535719034.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="lol"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Objectice-C/" rel="tag"># Objectice-C</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/12/11/protobuf-in-iOS/" rel="prev" title="iOS项目开发中使用protobuf">
+      <i class="fa fa-chevron-left"></i> iOS项目开发中使用protobuf
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/02/19/map-sort-ios/" rel="next" title="iOS字典的排序问题">
+      iOS字典的排序问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#MD5%E7%9A%84%E5%B8%B8%E8%AF%86%E6%80%A7%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">MD5的常识性知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86%E7%82%B9%E7%9A%84%E8%A1%A5%E5%85%85"><span class="nav-number">2.</span> <span class="nav-text">一些知识点的补充</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%88%E5%B8%8C"><span class="nav-number">2.1.</span> <span class="nav-text">哈希</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%A9%E8%99%B9%E8%A1%A8"><span class="nav-number">2.2.</span> <span class="nav-text">彩虹表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E7%A2%B0%E6%92%9E"><span class="nav-number">2.3.</span> <span class="nav-text">哈希碰撞</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E7%A0%B4%E8%A7%A3MD5%E6%96%B9%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">常用破解MD5方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Sean</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sean</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

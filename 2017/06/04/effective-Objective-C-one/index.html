@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="编写高质量的 iOS 和 OS X 代码的52个有效办法-读书笔记 最近在读Effective Objective-C 2.0,想做一下记录,我是挑选自己感兴趣的,和书中的顺序不一样,看到那写到哪">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective Objective-C 2.0 笔记(一)">
+<meta property="og:url" content="http://example.com/2017/06/04/effective-Objective-C-one/index.html">
+<meta property="og:site_name" content="Sean Blog">
+<meta property="og:description" content="编写高质量的 iOS 和 OS X 代码的52个有效办法-读书笔记 最近在读Effective Objective-C 2.0,想做一下记录,我是挑选自己感兴趣的,和书中的顺序不一样,看到那写到哪">
+<meta property="og:locale">
+<meta property="article:published_time" content="2017-06-04T12:13:27.000Z">
+<meta property="article:modified_time" content="2022-05-04T11:38:14.876Z">
+<meta property="article:author" content="Sean">
+<meta property="article:tag" content="Objectice-C">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2017/06/04/effective-Objective-C-one/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>Effective Objective-C 2.0 笔记(一) | Sean Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Sean Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/06/04/effective-Objective-C-one/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sean">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sean Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Effective Objective-C 2.0 笔记(一)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-06-04 20:13:27" itemprop="dateCreated datePublished" datetime="2017-06-04T20:13:27+08:00">2017-06-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-05-04 19:38:14" itemprop="dateModified" datetime="2022-05-04T19:38:14+08:00">2022-05-04</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>编写高质量的 iOS 和 OS X 代码的52个有效办法-读书笔记</p>
+<p>最近在读<code>Effective Objective-C 2.0</code>,想做一下记录,我是挑选自己感兴趣的,和书中的顺序不一样,看到那写到哪</p>
+<span id="more"></span>
+
+<h2 id="第4条-多用类型常量-少用-define-预处理命令"><a href="#第4条-多用类型常量-少用-define-预处理命令" class="headerlink" title="第4条:多用类型常量,少用 #define 预处理命令"></a>第4条:多用类型常量,少用 #define 预处理命令</h2><p>在定义常量的时候,我们通常需要确定一下几件事:</p>
+<ol>
+<li><code>常量代表的含义</code></li>
+<li><code>常量的作用域</code></li>
+<li><code>什么样的常量的命名方式简单易懂?</code></li>
+</ol>
+<p>如果我们定义个动画时间的时候,我们通常会这么定义</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define ANIMATION_DURATION 0.3</span><br></pre></td></tr></table></figure>
+
+<p>这么定义的缺点是</p>
+<ul>
+<li><code>常量代表的含义</code>不清晰,未明确指出0.3与时间有关.</li>
+<li><code>常量的作用域</code>过大,预处理过程会把碰到所有的<code>ANIMATION_DURATION</code>一律替换成0.3,这样的话,假设此指令声明在某个头文件中,那么引入这个头文件的代码中的<code>ANIMATION_DURATION</code>都会被替换掉,所以说即使你使用#define定义常量,也要放在 <code>.m</code>文件里</li>
+<li><code>什么样的常量的命名方式简单易懂?</code>,这种命名方式,没有规范,下面会介绍一下规范的定义常量</li>
+</ul>
+<p>正确的定义方式应该按照下面两种方式:</p>
+<p>第一,常量的作用域仅在当前类,即<code>局部常量</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//in the implementation file - EOCAnimatedView.m</span><br><span class="line">static const NSTimeInterval kAnimationDuration = 0.3;</span><br></pre></td></tr></table></figure>
+
+<p>第二,常量的作用域在所有引用了当前类的代码中,即<code>全局常量</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//in the header file - EOCAnimatedView.h</span><br><span class="line">extern const NSTimeInterval EOCAnimatedViewAnimationDuration;</span><br><span class="line"></span><br><span class="line">//in the implementation file - EOCAnimatedView.m</span><br><span class="line">const NSTimeInterval EOCAnimatedViewAnimationDuration = 0.3;</span><br></pre></td></tr></table></figure>
+
+<p>为什么要这样定义呢?</p>
+<ol>
+<li><code>常量代表的含义</code>明确,0.3与时间有关,所以我们用<code>NSTimeInterval</code>表示,这样容易让人理解</li>
+<li><code>常量的作用域</code>明确,常量的作用域仅在当前类时,我们用第一种方法定义,常量的作用域在所有引用了当前类的代码中,即<code>全局变量</code>我们用第二种方式定义</li>
+<li><code>什么样的常量的命名方式简单易懂?</code>若某常量局限于<code>编译单元(translation unit)</code> 也就是”实现文件”即<code>.m</code>文件,则在前面加字母<code>k</code>,因为<code>局部变量</code>仅在当前类使用,所以不用加以区分,若常量在类外可见,则通常以类名为前缀,因为<code>全局常量</code>加入到<code>全局常量表</code>中,必须用类名加以区分</li>
+</ol>
+<p>为什么我们不能在.h文件里面定义<code>局部常量</code>?</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">局部常量`的定义不应该出现在`.h`文件里,因为 OC 没有 namespace 这个概念,所有引入这份头文件的其他文件都会出现这个名字,如果在`局部常量`的定义出现在`.h`文件里,就等于声明了一个`kAnimationDuration`的`全局常量</span><br></pre></td></tr></table></figure>
+
+<p>为什么常量的作用域仅在当前类时,我们用第一种方法定义?</p>
+<p>因为<code>static</code> 修饰符意味着该常量仅定义在定义该<code>常量的编译单元中(.m)</code>可见, 编译器每收到一个编译单元,就会输出一份<code>目标文件(object file)</code>,如声明此常量不加<code>static</code>,编译器会为它创建一个<code>外部符号(external symbol)</code>, 此时,另一个编译也声明了同名变量,那么编译器就会报错.</p>
+<p>为什么常量的作用域在所有引用了当前类的代码中,即<code>全局变量</code>我们用第二种方式定义?</p>
+<p><code>全局常量</code>需要放在<code>全局符号表(global symbol table)</code> 中,这种常量的定义是在头文件<code>声明</code>,在实现文件里<code>定义</code>,这样,编译器在使用此常量的时候无需查看其定义,即允许代码使用此常量,因为他知道,当链接成二进制文件之后,肯定能找到这个常量.</p>
+<p>Note:</p>
+<ul>
+<li>常量的定义应该从右到左解读</li>
+<li>使用<code>第二种定义</code>优于使用<code>#define</code>,因为<code>#define</code>定义出来的常量不含类型信息,编译器只会在编译前据此执行查找与替换操作,即使有人重新定义了常量值,编译器也不会产生警告信息,这将导致应用程序中的常量值不一致</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Objectice-C/" rel="tag"># Objectice-C</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/03/26/design-guide-for-different-device/" rel="prev" title="客户端,web 端,微信端设计差别">
+      <i class="fa fa-chevron-left"></i> 客户端,web 端,微信端设计差别
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/06/11/how-to-make-a-cool-terminal/" rel="next" title="配置一个炫酷的终端">
+      配置一个炫酷的终端 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC4%E6%9D%A1-%E5%A4%9A%E7%94%A8%E7%B1%BB%E5%9E%8B%E5%B8%B8%E9%87%8F-%E5%B0%91%E7%94%A8-define-%E9%A2%84%E5%A4%84%E7%90%86%E5%91%BD%E4%BB%A4"><span class="nav-number">1.</span> <span class="nav-text">第4条:多用类型常量,少用 #define 预处理命令</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Sean</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sean</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

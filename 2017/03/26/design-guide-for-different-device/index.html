@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="同一款产品为了更好的用户体验，通常要针对不同平台的特点对产品进行设计的，下面我们来聊一聊同一款产品在客户端（iOS，andriod，winPhone），web及微信端该如何设计。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="客户端,web 端,微信端设计差别">
+<meta property="og:url" content="http://example.com/2017/03/26/design-guide-for-different-device/index.html">
+<meta property="og:site_name" content="Sean Blog">
+<meta property="og:description" content="同一款产品为了更好的用户体验，通常要针对不同平台的特点对产品进行设计的，下面我们来聊一聊同一款产品在客户端（iOS，andriod，winPhone），web及微信端该如何设计。">
+<meta property="og:locale">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1401726-563d0fa217a1b400.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1401726-e703a7e29ff72540.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1401726-4e299b6e984e674c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1401726-2f8214cdade9a85f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1401726-fdb61635aa84d1ab.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1401726-20b665ad294e8e5b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2017-03-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-04T11:46:12.455Z">
+<meta property="article:author" content="Sean">
+<meta property="article:tag" content="Design">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/1401726-563d0fa217a1b400.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+<link rel="canonical" href="http://example.com/2017/03/26/design-guide-for-different-device/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>客户端,web 端,微信端设计差别 | Sean Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Sean Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/03/26/design-guide-for-different-device/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sean">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sean Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          客户端,web 端,微信端设计差别
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-03-26 00:00:00" itemprop="dateCreated datePublished" datetime="2017-03-26T00:00:00+08:00">2017-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-05-04 19:46:12" itemprop="dateModified" datetime="2022-05-04T19:46:12+08:00">2022-05-04</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>同一款产品为了更好的用户体验，通常要针对不同平台的特点对产品进行设计的，下面我们来聊一聊同一款产品在客户端（iOS，andriod，winPhone），web及微信端该如何设计。</p>
+<span id="more"></span>
+
+<h3 id="三端差异性对比"><a href="#三端差异性对比" class="headerlink" title="三端差异性对比"></a>三端差异性对比</h3><p><strong>本文中提到的客户端为 ipad 端</strong></p>
+<p><strong>产品体验差异</strong></p>
+<table>
+<thead>
+<tr>
+<th>产品体验</th>
+<th>web 端</th>
+<th>客户端(ipad)</th>
+<th>微信端(iphone)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>屏幕大小</td>
+<td>最大</td>
+<td>较大</td>
+<td>适中</td>
+</tr>
+<tr>
+<td>交互方式</td>
+<td>光标点触</td>
+<td>手指交互</td>
+<td>手指交互</td>
+</tr>
+<tr>
+<td>动作影响范围</td>
+<td>很小</td>
+<td>较大</td>
+<td>较大</td>
+</tr>
+<tr>
+<td>是否可以横屏</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>便携性</td>
+<td>极差</td>
+<td>适中</td>
+<td>很好</td>
+</tr>
+<tr>
+<td>开发人员配置</td>
+<td>产品,服务器,前端, UI, 测试,运维</td>
+<td>产品,服务器,UI,测试,运维</td>
+<td>产品 服务器,测试,运维</td>
+</tr>
+<tr>
+<td>持久化存储</td>
+<td>极差</td>
+<td>较好</td>
+<td>较好</td>
+</tr>
+<tr>
+<td>单一页面功能点</td>
+<td>很多</td>
+<td>较多</td>
+<td>很少</td>
+</tr>
+<tr>
+<td>交互流畅性</td>
+<td>较好</td>
+<td>非常好</td>
+<td>适中</td>
+</tr>
+<tr>
+<td>用户输入文字意愿</td>
+<td>较高</td>
+<td>较低</td>
+<td>适中</td>
+</tr>
+<tr>
+<td>用户使用出发点</td>
+<td>不怕麻烦</td>
+<td>方便使用</td>
+<td>方便使用</td>
+</tr>
+</tbody></table>
+<p><strong>硬件设施差异</strong></p>
+<table>
+<thead>
+<tr>
+<th>硬件设施</th>
+<th>web 端</th>
+<th>客户端(ipad)</th>
+<th>微信端(iphone)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>陀螺仪</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>加速传感器</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>光线传感器</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>支持 flash</td>
+<td>支持</td>
+<td>不支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>支持 蓝牙</td>
+<td>支持(隐藏较深)</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>支持 GPS</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+</tbody></table>
+<p><strong>数据流向差异</strong></p>
+<p><strong>web 端</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PC上的浏览器 ---data---&gt; 我们的服务器 ---data---&gt; PC上的浏览器</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-563d0fa217a1b400.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p><strong>客户端</strong></p>
+<p><em>http 通讯的情况下</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">客户端 ---data---&gt; 我们的服务器 ---data---&gt; 客户端</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-e703a7e29ff72540.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">我们的服务器 ---data---&gt; 苹果的服务器 ---data---&gt; 客户端</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-4e299b6e984e674c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p><strong>微信端</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">手机上的微信端 ---data---&gt; 微信服务器 ---data---&gt; 我们的服务器 ---data---&gt; 手机上的微信端</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-2f8214cdade9a85f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注:我们的服务器向主动和微信企业号通信,可以访问微信的接口,由微信服务器和微信客户端通信,原理都相似,就不画图了.</span><br></pre></td></tr></table></figure>
+
+<h3 id="主要指导原则"><a href="#主要指导原则" class="headerlink" title="主要指导原则"></a>主要指导原则</h3><h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><p><strong>宗旨</strong>:移动端更偏重体验!</p>
+<p>关键词:<a href="%E5%BC%95%E7%94%A8%E8%87%AA%E3%80%8AiOS8%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83%E3%80%8B">^脚注一</a></p>
+<blockquote>
+<ul>
+<li>遵从：UI能够更好地帮助用户理解内容并与之互动，但却不会分散用户对内容本身的注意力。</li>
+<li>清晰：各种大小的文字应该易读，图标应该醒目，去除多余的修饰，突出重点，很好地突显了设计理念。</li>
+<li>深度：视觉的层次和生动的交互动作会赋予UI新的活力，不但帮助用户更好理解新UI的操作并让用户在使用过程中感到惊喜。<br>引用自&lt;iOS8设计规范&gt;</li>
+</ul>
+</blockquote>
+<p>原则:<a href="%E5%BC%95%E7%94%A8%E8%87%AA%E3%80%8AiOS8%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83%E3%80%8B">^脚注二</a></p>
+<blockquote>
+<ul>
+<li>首先，去除了UI元素让应用的核心功能呈现得更加直接并强调其相关性。</li>
+<li>其次，直接使用iOS的系统主题让其成为应用的UI，这样能给用户统一的视觉感受。</li>
+<li>最后，保证你设计的UI可以适应各种设备和不同操作模式，这样用户可以在不同场景下舒适地享用你的应用。</li>
+</ul>
+</blockquote>
+<p><strong>特点</strong>:</p>
+<ol>
+<li>客户端只要通过用户的触摸,拖拽来完成交互.</li>
+<li>屏幕比较大.</li>
+<li>便携性适中</li>
+</ol>
+<p><strong>原理</strong>:客户端是一个基于苹果公司的iOS操作系统上面的一个软件(进程),相对于 PC 来说,性能略差,不处理过于复杂的逻辑.所以需要和服务器来进行交互,如果把服务器比喻为数据的加工者,那么客户端就是数据采集以及数据展示者.当然客户端也可以有浏览器,只不过性能比 PC 上的浏览器略差,但是客户端的浏览器的独特之处在于他可以和客户端之间进行一些交互(比如点击客户端网页上的某个按钮,弹出客户端的提示框).</p>
+<p><strong>局限性</strong></p>
+<ol>
+<li>客户端的局限性是他的性能没有 pc 好</li>
+<li>屏幕在功能设计上的局限性也是有的,这也是屏幕,体积的双刃剑</li>
+<li>点触没有鼠标精准,这也是客户端本身的局限性,也是一把双刃剑</li>
+</ol>
+<p><strong>优点</strong></p>
+<ol>
+<li>交互性较强,手指操作灵活</li>
+<li>便携,走到哪拿到哪</li>
+<li>持久化存储方便,可以针对用户这个点,提升很强的定制化</li>
+</ol>
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-fdb61635aa84d1ab.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="14900839448012.jpg"></p>
+<p>####web 端</p>
+<p><strong>宗旨</strong>:web 端相对比较偏功能和内容!</p>
+<p><strong>特点</strong>:</p>
+<ol>
+<li>web 端只要通过鼠标点击来完成交互</li>
+<li>屏幕很大,鼠标较小,所以点击可以很精准.</li>
+<li>便携性基本没有</li>
+</ol>
+<p><strong>原理</strong>: web 端是通过浏览器来对服务器进行交互的,其实 web 端的浏览器也是一个软件(进程),其功能强大,相比服务器,网页就是信息的采集者和展示者, web 端想和服务器交互有两种方式.</p>
+<ol>
+<li>html 通过http(短连接)来进行表单提交,服务端返回数据的时候,利用浏览器进行渲染.</li>
+<li>html 通过 js 来进行一些事件的驱动来让浏览器做一些事情,并发送 http(短连接)来和服务器进行交互,服务端返回数据的时候,利用js 和浏览器进行一系列事件的触发.</li>
+</ol>
+<p><strong>局限性</strong></p>
+<ol>
+<li>pc 携带不便是他致命的弱点,谁没事拿着电脑到处跑啊?</li>
+<li>通过网址来登录,没有点击就出现的效果好</li>
+<li>复杂持久化存储机制不完善,开发者不能利用 web 端去给做一些针对用户个性化的持久化存储</li>
+</ol>
+<p><strong>优势</strong></p>
+<ol>
+<li>可以进行复杂的操作</li>
+<li>屏幕大,看着很爽</li>
+</ol>
+<p>web端的优势就是源于性能较好的 PC 端和强大的浏览器来和用户进行一系列较复杂的操作.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-20b665ad294e8e5b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="14900816447614.jpg"></p>
+<p>功能强大,一个界面布满所有功能.</p>
+<p>####微信端</p>
+<p><strong>宗旨</strong>:微信端设计更加轻量级,简单功能的完成,一些信息的传递.</p>
+<p><strong>特点</strong>:</p>
+<ol>
+<li>微信端主要靠下面的选项栏和发消息(发送指定消息,返回给用户一些信息)来完成交互</li>
+<li>屏幕较小</li>
+<li>便携性较强</li>
+</ol>
+<p><strong>原理</strong>:前面我们提到,客户端是一个基于苹果公司的iOS操作系统上面的一个软件(进程),相对于 PC 来说,性能略差,那么微信端就是微信这个软件给一些公司提供的接口,微信的用户量较大,所以可以通过向一些有意向在微信上展示自己信息的公司收费,然后他们给我们提供接口,让我们可以再微信上展示一些我们自己的信息(按照他们的要求),所以微信端的开发是我们的后台开发人员通过他们的接口给腾讯的服务器提供数据,腾讯的服务器再去通知他们的客户端进行一些我们公司的信息展示</p>
+<p>微信端的功能可以划分为两种</p>
+<ol>
+<li>我们提供按照要求给他们服务器数据,他们服务器传递数据给微信,微信在他们的软件上进行一些展示(按照一种特定的形式)</li>
+<li>我们给他们一个链接地址(web 端的页面),他们用软件内的浏览器进行一些展示.</li>
+</ol>
+<p><strong>局限性</strong></p>
+<ol>
+<li>既然使用别人的软件去展示你的信息,那么就要按照人家的规矩来.</li>
+<li>目前微信提供的服务还不是很丰富,所以对业务展示来说,不能很好地支持,只能展示一些比较简单的信息.</li>
+</ol>
+<p><strong>优点</strong></p>
+<ol>
+<li>微信的用户基数大,让用户了解我们产品的代价较低,所以进行一些基本信息的展示效果很不错.可以通过新本信息去吸引用户去下载我们的 app</li>
+<li>用户在接受我们信息的时候代价较低,人人都玩微信,获取我们信息很方便.</li>
+</ol>
+<p>附:<br><a target="_blank" rel="noopener" href="https://www.iamue.com/14576">ios8设计规范 中文版 完整版</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Design/" rel="tag"># Design</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/03/12/coding-template-for-objective-C/" rel="prev" title="Objective-C 编码规范">
+      <i class="fa fa-chevron-left"></i> Objective-C 编码规范
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/06/04/effective-Objective-C-one/" rel="next" title="Effective Objective-C 2.0 笔记(一)">
+      Effective Objective-C 2.0 笔记(一) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E7%AB%AF%E5%B7%AE%E5%BC%82%E6%80%A7%E5%AF%B9%E6%AF%94"><span class="nav-number">1.</span> <span class="nav-text">三端差异性对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E6%8C%87%E5%AF%BC%E5%8E%9F%E5%88%99"><span class="nav-number">2.</span> <span class="nav-text">主要指导原则</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">2.1.</span> <span class="nav-text">客户端</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Sean</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sean</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

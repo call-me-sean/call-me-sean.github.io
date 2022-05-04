@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="iOS字典的排序问题">
+<meta property="og:url" content="http://example.com/2017/02/19/map-sort-ios/index.html">
+<meta property="og:site_name" content="Sean Blog">
+<meta property="og:locale">
+<meta property="og:image" content="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/12/sort.PNG">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1401726-616c5fd38d77672a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="article:published_time" content="2017-02-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-04T11:42:49.339Z">
+<meta property="article:author" content="Sean">
+<meta property="article:tag" content="Objectice-C">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/12/sort.PNG">
+
+<link rel="canonical" href="http://example.com/2017/02/19/map-sort-ios/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>iOS字典的排序问题 | Sean Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Sean Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/02/19/map-sort-ios/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sean">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sean Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS字典的排序问题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-02-19 00:00:00" itemprop="dateCreated datePublished" datetime="2017-02-19T00:00:00+08:00">2017-02-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-05-04 19:42:49" itemprop="dateModified" datetime="2022-05-04T19:42:49+08:00">2022-05-04</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/12/sort.PNG" alt="title"></p>
+<span id="more"></span>
+
+<p>在日常开发中,经常会遇到根据字典的Key对Value进行排序的问题,所以对于此类问题抽出一个通用方法,废话不多说,下面是代码.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> 对字典(Key-Value)排序 区分大小写</span><br><span class="line"></span><br><span class="line"> @param dict 要排序的字典</span><br><span class="line"> */</span><br><span class="line">- (void)sortedDictionary:(NSDictionary *)dict&#123;</span><br><span class="line">    </span><br><span class="line">    //将所有的key放进数组</span><br><span class="line">    NSArray *allKeyArray = [dict allKeys];</span><br><span class="line">    </span><br><span class="line">    //序列化器对数组进行排序的block 返回值为排序后的数组</span><br><span class="line">    NSArray *afterSortKeyArray = [allKeyArray sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id</span><br><span class="line">    Nonnull obj2) &#123;</span><br><span class="line">        /**</span><br><span class="line">          In the compare: methods, the range argument specifies the</span><br><span class="line">          subrange, rather than the whole, of the receiver to use in the</span><br><span class="line">          comparison. The range is not applied to the search string.  For</span><br><span class="line">          example, [@&quot;AB&quot; compare:@&quot;ABC&quot; options:0 range:NSMakeRange(0,1)]</span><br><span class="line">          compares &quot;A&quot; to &quot;ABC&quot;, not &quot;A&quot; to &quot;A&quot;, and will return</span><br><span class="line">          NSOrderedAscending. It is an error to specify a range that is</span><br><span class="line">          outside of the receiver&#x27;s bounds, and an exception may be raised.</span><br><span class="line">         </span><br><span class="line">        - (NSComparisonResult)compare:(NSString *)string;</span><br><span class="line">         </span><br><span class="line">         compare方法的比较原理为,依次比较当前字符串的第一个字母:</span><br><span class="line">         如果不同,按照输出排序结果</span><br><span class="line">         如果相同,依次比较当前字符串的下一个字母(这里是第二个)</span><br><span class="line">         以此类推</span><br><span class="line">         </span><br><span class="line">         排序结果</span><br><span class="line">         NSComparisonResult resuest = [obj1 compare:obj2];为从小到大,即升序;</span><br><span class="line">         NSComparisonResult resuest = [obj2 compare:obj1];为从大到小,即降序;</span><br><span class="line">         </span><br><span class="line">         注意:compare方法是区分大小写的,即按照ASCII排序</span><br><span class="line">         */</span><br><span class="line">        //排序操作</span><br><span class="line">        NSComparisonResult resuest = [obj1 compare:obj2];</span><br><span class="line">        return resuest;</span><br><span class="line">    &#125;];</span><br><span class="line">    NSLog(@&quot;afterSortKeyArray:%@&quot;,afterSortKeyArray);</span><br><span class="line">    </span><br><span class="line">    //通过排列的key值获取value</span><br><span class="line">    NSMutableArray *valueArray = [NSMutableArray array];</span><br><span class="line">    for (NSString *sortsing in afterSortKeyArray) &#123;</span><br><span class="line">        NSString *valueString = [dict objectForKey:sortsing];</span><br><span class="line">        [valueArray addObject:valueString];</span><br><span class="line">    &#125;</span><br><span class="line">    NSLog(@&quot;valueArray:%@&quot;,valueArray);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码中提到了排序是按照ASCII码排序,因为ASCII码表示区分大小写的,所以我们的排序结果也区分大小写.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-616c5fd38d77672a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="ASCII"></p>
+<p>如果不想区分大小写,可以在比较前,可以用lowercaseString方法将字符串转换为小写.代码如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> 对字典(Key-Value)排序 不区分大小写</span><br><span class="line"> </span><br><span class="line"> @param dict 要排序的字典</span><br><span class="line"> */</span><br><span class="line">- (void)sortedDictionarybyLowercaseString:(NSDictionary *)dict&#123;</span><br><span class="line">    </span><br><span class="line">    //将所有的key放进数组</span><br><span class="line">    NSArray *allKeyArray = [dict allKeys];</span><br><span class="line">    </span><br><span class="line">    //序列化器对数组进行排序的block 返回值为排序后的数组</span><br><span class="line">    NSArray *afterSortKeyArray = [allKeyArray sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id</span><br><span class="line">    Nonnull obj2) &#123;</span><br><span class="line">/**</span><br><span class="line">          In the compare: methods, the range argument specifies the</span><br><span class="line">          subrange, rather than the whole, of the receiver to use in the</span><br><span class="line">          comparison. The range is not applied to the search string.  For</span><br><span class="line">          example, [@&quot;AB&quot; compare:@&quot;ABC&quot; options:0 range:NSMakeRange(0,1)]</span><br><span class="line">          compares &quot;A&quot; to &quot;ABC&quot;, not &quot;A&quot; to &quot;A&quot;, and will return</span><br><span class="line">          NSOrderedAscending. It is an error to specify a range that is</span><br><span class="line">          outside of the receiver&#x27;s bounds, and an exception may be raised.</span><br><span class="line">         </span><br><span class="line">        - (NSComparisonResult)compare:(NSString *)string;</span><br><span class="line">         </span><br><span class="line">         compare方法的比较原理为,依次比较当前字符串的第一个字母:</span><br><span class="line">         如果不同,按照输出排序结果</span><br><span class="line">         如果相同,依次比较当前字符串的下一个字母(这里是第二个)</span><br><span class="line">         以此类推</span><br><span class="line">         </span><br><span class="line">         排序结果</span><br><span class="line">         NSComparisonResult resuest = [obj1 compare:obj2];为从小到大,即升序;</span><br><span class="line">         NSComparisonResult resuest = [obj2 compare:obj1];为从大到小,即降序;</span><br><span class="line">         </span><br><span class="line">         注意:compare方法是区分大小写的,即按照ASCII排序</span><br><span class="line">         */</span><br><span class="line">        //小写转化</span><br><span class="line">        obj1 = [obj1 lowercaseString];</span><br><span class="line">        obj2 = [obj2 lowercaseString];</span><br><span class="line">        //排序操作</span><br><span class="line">        NSComparisonResult resuest = [obj1 compare:obj2];</span><br><span class="line">        return resuest;</span><br><span class="line">    &#125;];</span><br><span class="line">    NSLog(@&quot;afterSortKeyArray:%@&quot;,afterSortKeyArray);</span><br><span class="line">    </span><br><span class="line">    //通过排列的key值获取value</span><br><span class="line">    NSMutableArray *valueArray = [NSMutableArray array];</span><br><span class="line">    for (NSString *sortsing in afterSortKeyArray) &#123;</span><br><span class="line">        NSString *valueString = [dict objectForKey:sortsing];</span><br><span class="line">        [valueArray addObject:valueString];</span><br><span class="line">    &#125;</span><br><span class="line">    NSLog(@&quot;valueArray:%@&quot;,valueArray);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="简单测试代码"><a href="#简单测试代码" class="headerlink" title="简单测试代码"></a>简单测试代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:@&quot;Danny&quot;,@&quot;Basd&quot;,@&quot;12&quot;,@&quot;Cerff&quot;,@&quot;man&quot;,@&quot;ABCDEFG&quot;,@&quot;Sean&quot;,@&quot;Cerf&quot;,nil];</span><br><span class="line">    NSLog(@&quot;dictionary:%@&quot;,dict);</span><br><span class="line">    [self sortedDictionary:dict];</span><br></pre></td></tr></table></figure>
+
+<h6 id="输出为"><a href="#输出为" class="headerlink" title="输出为:"></a>输出为:</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">2017-02-12 11:23:03.484 根据key对dictionary排序[6122:164377] dictionary:&#123;</span><br><span class="line">    ABCDEFG = 12345;</span><br><span class="line">    Basd = Rddd;</span><br><span class="line">    Cerf = Sean;</span><br><span class="line">    Cerff = iiiii;</span><br><span class="line">&#125;</span><br><span class="line">2017-02-12 11:23:03.484 根据key对dictionary排序[6122:164377] afterSortKeyArray:(</span><br><span class="line">    ABCDEFG,</span><br><span class="line">    Basd,</span><br><span class="line">    Cerf,</span><br><span class="line">    Cerff</span><br><span class="line">)</span><br><span class="line">2017-02-12 11:23:03.485 根据key对dictionary排序[6122:164377] valueArray:(</span><br><span class="line">    12345,</span><br><span class="line">    Rddd,</span><br><span class="line">    Sean,</span><br><span class="line">    iiiii</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="代码此时例子较多-就不都放上来了-大家可放心食用"><a href="#代码此时例子较多-就不都放上来了-大家可放心食用" class="headerlink" title="代码此时例子较多,就不都放上来了,大家可放心食用."></a>代码此时例子较多,就不都放上来了,大家可放心食用.</h4>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Objectice-C/" rel="tag"># Objectice-C</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/01/05/md5/" rel="prev" title="关于MD5安全性的讨论">
+      <i class="fa fa-chevron-left"></i> 关于MD5安全性的讨论
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/03/12/coding-template-for-objective-C/" rel="next" title="Objective-C 编码规范">
+      Objective-C 编码规范 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">简单测试代码</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E4%B8%BA"><span class="nav-number">1.0.0.0.1.</span> <span class="nav-text">输出为:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E6%AD%A4%E6%97%B6%E4%BE%8B%E5%AD%90%E8%BE%83%E5%A4%9A-%E5%B0%B1%E4%B8%8D%E9%83%BD%E6%94%BE%E4%B8%8A%E6%9D%A5%E4%BA%86-%E5%A4%A7%E5%AE%B6%E5%8F%AF%E6%94%BE%E5%BF%83%E9%A3%9F%E7%94%A8"><span class="nav-number">1.0.1.</span> <span class="nav-text">代码此时例子较多,就不都放上来了,大家可放心食用.</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Sean</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sean</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>classes-and-metaclasses</title>
+    <url>/2022/02/14/classes-and-metaclasses/</url>
+    <content><![CDATA[<p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2020/02/ClassAndMetaclass.png" alt="ClassesAndMetaclasses"></p>
+<span id="more"></span>
+
+<p>Objective-C是一个基于类(calss)的对象系统，每一个对象都是某个类(calss)的实例。对象的isa指针指向他的class，这个class描述的对象的数据：allocation size，ivar类型，以及内存布局。类(calss)还描述了对象的行为：选择子是否被响应，以及method的实现地址。</p>
+<p>类(calss)的方法列表是实例方法的集合，即对象响应的选择子。当你给实例对象发送消息时，objc_msgSend()会查找对象的类(calss)(和超类(如果有))的方法列表，来决定哪一个方法会被调用。</p>
+<p>每一个Objective-c的class也是一个对象，它有isa指针和其他数据，并且可以响应选择子。当你调用类方法(+号方法)时，比如[NSObject alloc]，实际上是向该类的类对象发送消息.</p>
+<p>由于类是一个对象，因此它必须是其他类的实例：元类(metaclass)。元类是类对象的描述，就像类是普通对象的描述一样。元类的方法列表是类方法(+号方法)：类对象响应的选择子。当你想向类(元类的实例)发送消息时，objc_msgSend()会浏览元类的方法列表(和超类(如果有)),以及确定要调用的方法。类方法由元类代表类对象描述，就像实例方法由类代表实例对象描述是一样的。</p>
+<p>那元类呢？它会一直向下延伸吗？答案是否定的。metaclass是root metaclass的实例。root metaclass本身就是root metaclass的实例(自指)。isa指向链在此处以一个循环结束。因为现实世界中，没有人会给元类对象发送消息。</p>
+<p>更重要的是元类的super类(超类)。元类的super链和类的super链是平行的。因此，类方法和实例方法是并行继承的。root metaclass的super类是root class，因此每个类对象都会响应根类的实例方法。比如：[NSObject copy]。最后，与任何其他对象一样，类对象及其子类都是root class的实例。</p>
+<p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2020/02/ClassAndMetaclass.png" alt="ClassesAndMetaclasses"></p>
+<p>你现在感到困惑吗？上图可能会对你有所帮助。请记住，当消息发送给任何对象的时候，方法查找从该对象的isa指针开始，然后查找继续super链。实例方法由类定义，类方法由metaclass和root class定义。</p>
+<p>在计算机科学语言理论中，类和元类的层次结构可以更自由，具有更深的元类链和从任何单个元类实例化的多个类。Objective-C使用元类来实现诸如类方法之类的实际目标。但另一方面却趋向于隐藏元类。例如：[NSObject class]和[NSObject self]是相同的，从形式上讲，它应该返回NSObject-&gt;isa指向的元类。Objective-C在这里采取了折中的方案。在Objective-C变得太meta之前，限制了类的模式。</p>
+]]></content>
+      <tags>
+        <tag>Objectice-C</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Objective-C 编码规范</title>
+    <url>/2017/03/12/coding-template-for-objective-C/</url>
+    <content><![CDATA[<p><strong><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/12/codingguide.png" alt="title"></strong></p>
+<p>Objective-C 编码规范，内容来自苹果的文档翻译，自己的编码经验和对其它资料的总结。</p>
+<span id="more"></span>
+
+<h2 id="一-命名规范"><a href="#一-命名规范" class="headerlink" title="一.命名规范"></a>一.命名规范</h2><h3 id="基本原则"><a href="#基本原则" class="headerlink" title="基本原则"></a>基本原则</h3><p><strong>1.清晰</strong><br>命名应该尽可能的清晰和简洁，但在 Objective-C 中，清晰比简洁更重要。由于 Xcode 强大的自动补全功能，我们不必担心名称过长的问题。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 清晰</span><br><span class="line">insertObject:atIndex:</span><br><span class="line">// 不清晰， insert 的对象类型和 at 的位置属性没有说明</span><br><span class="line">insert:at:</span><br><span class="line">// 清晰</span><br><span class="line">removeObjectAtIndex:</span><br><span class="line">// 不清晰， remove 的对象类型没有说明，参数的作用没有说明</span><br><span class="line">remove:</span><br></pre></td></tr></table></figure>
+
+<p>不要使用单词的简写，拼写出完整的单词：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 清晰</span><br><span class="line">setBackgroundColor:</span><br><span class="line">// 不清晰，不要使用简写</span><br><span class="line">setBkgdColor:</span><br></pre></td></tr></table></figure>
+
+<p>然而，有部分单词简写在 Objective-C 编码过程中是非常常用的，以至于成为了一种规范，这些简写可以在代码中直接使用，下面列举了部分</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">alloc == Allocate </span><br><span class="line">max == Maximum</span><br><span class="line">alt == Alternate </span><br><span class="line">min == Minimum</span><br><span class="line">app == Application </span><br><span class="line">msg == Message</span><br><span class="line">calc == Calculate </span><br><span class="line">nib == Interface Builder archive</span><br><span class="line">dealloc == Deallocate </span><br><span class="line">pboard == Pasteboard</span><br><span class="line">func == Function </span><br><span class="line">rect == Rectangle</span><br><span class="line">horiz == Horizontal </span><br><span class="line">Rep == Representation (used in class name such as NSBitmapImageRep).</span><br><span class="line">info == Information </span><br><span class="line">temp == Temporary</span><br><span class="line">init == Initialize </span><br><span class="line">vert == Vertical</span><br><span class="line">int == Integer</span><br></pre></td></tr></table></figure>
+
+<p>命名方法或者函数时要避免歧义<br>功能的英文词义命名， 以它**[做什么]**来命名，而不是[怎么做]来命名</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 有歧义，是返回 sendPort 还是 send 一个 Port ？</span><br><span class="line">sendPort</span><br><span class="line">// 有歧义，是返回一个名字属性的值还是 display 一个 name 的动作？</span><br><span class="line">displayName</span><br><span class="line">// 正确 很明显这个函数是返回一个消息的时间戳</span><br><span class="line">getAmsgTimeStamp;</span><br></pre></td></tr></table></figure>
+
+<p><strong>2.一致性</strong><br>整个工程的命名风格要保持一致性，最好和苹果 SDK 的代码保持统一。不同类中完成相似功能的方法应该叫一样的名字，比如我们总是用 count 来返回集合的个数，不能在 A 类中使用 count 而在 B 类中使用 getNumber 。</p>
+<ul>
+<li>如果代码需要打包成 Framework 给别的工程使用，或者工程项目非常庞大，需要拆分成不同的模块，使用命名前缀是非常有用的。</li>
+<li>可以在为类、协议、函数、常量以及 typedef 宏命名的时候使用前缀，但注意不要为成员变量或者方法使用前缀，因为他们本身就包含在类的命名空间内。</li>
+<li>命名前缀的时候不要和苹果 SDK 框架冲突</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">前缀由大写的字母缩写组成，比如 Cocoa 中 NS 前缀代表 Founation 框架中的类， IB 则代表 Interface Builder 框架。</span><br></pre></td></tr></table></figure>
+
+<p><strong>所以要选择符合自己项目的前缀,</strong></p>
+<h3 id="执行准则"><a href="#执行准则" class="headerlink" title="执行准则"></a>执行准则</h3><p><strong>1.命名类和协议（ Class&amp;Protocol ）</strong></p>
+<ul>
+<li>类名以大写字母开头，应该包含一个名词来表示它代表的对象类型，同时可以加上必要的前缀，比如 NSString,NSDate,NSScanner,NSApplication 等等。</li>
+<li>协议名称应该清晰地表示它所执行的行为，而且要和类名区别开来，所以通常使用 ing 词尾来命名一个协议，比如 NSCopying,NSLocking 。</li>
+<li>有些协议本身包含了很多不相关的功能，主要用来为某一特定类服务，这时候可以直接用类名来命名这个协议，比如 NSObject 协议，它包含了 id 对象在生存周期内的一系列方法。</li>
+</ul>
+<p><strong>2.命名头文件（ Headers ）</strong><br>_源码的头文件名应该清晰地暗示它的功能和包含的内容_：</p>
+<ul>
+<li>如果头文件内只定义了单个类或者协议，直接用类名或者协议名来命名头文件，比如 NSLocale.h 定义了 NSLocale 类。</li>
+<li>如果头文件内定义了一系列的类、协议、类别，使用其中最主要的类名来命名头文件，比如 NSString.h 定义了 NSString 和 NSMutableString 。</li>
+<li>每一个 Framework 都应该有一个和框架同名的头文件，包含了框架中所有公共类头文件的引用，比如 Foundation.h</li>
+<li>Framework 中有时候会实现在别的框架中类的类别扩展，这样的文件通常使用被扩展的框架名 +Additions 的方式来命名，比如 NSBundleAdditions.h 。</li>
+</ul>
+<p><strong>3.命名方法（ Methods ）</strong><br>Objective-C 的方法名通常都比较长，这是为了让程序有更好地可读性，按苹果的说法 “_ 好的方法名应当可以以一个句子的形式朗读出来_ ” 。</p>
+<p>方法一般以小写字母打头，每一个后续的单词首字母大写，方法名中不应该有标点符号（包括下划线），有两个例外：</p>
+<ul>
+<li>可以用一些通用的大写字母缩写打头方法，比如 PDF,TIFF 等。</li>
+<li>可以用带下划线的前缀来命名私有方法或者类别中的方法。</li>
+</ul>
+<p>如果方法表示让对象执行一个动作，使用动词打头来命名，_注意不要使用 do ， does 这种多余的关键字_，动词本身的暗示就足够了：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 动词打头的方法表示让对象执行一个动作</span><br><span class="line">- (void)invokeWithTarget:(id)target;</span><br><span class="line">- (void)selectTabViewItem:(NSTabViewItem *)tabViewItem;</span><br></pre></td></tr></table></figure>
+
+<p>如果方法是为了获取对象的一个属性值，直接用属性名称来命名这个方法，注意不要添加 get 或者其他的动词前缀：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 正确，使用属性名来命名方法</span><br><span class="line">- (NSSize)cellSize;</span><br><span class="line">// 错误，添加了多余的动词前缀</span><br><span class="line">- (NSSize)calcCellSize;</span><br><span class="line">- (NSSize)getCellSize;</span><br></pre></td></tr></table></figure>
+
+<p>对于有<strong>多个参数的方法</strong>，务必<strong>在每一个参数前都添加关键词</strong>，关键词应当清晰说明参数的作用<strong>不要用 and 来连接两个参数</strong>，通常 and 用来表示方法执行了两个相对独立的操作（从设计上来说，这时候应该拆分成两个独立的方法）.</p>
+<p>方法的参数命名也有一些需要注意的地方 :</p>
+<ul>
+<li>和方法名类似，参数的第一个字母小写，后面的每一个单词首字母大写</li>
+<li>不要再方法名中使用类似 pointer,ptr 这样的字眼去表示指针，参数本身的类型足以说明</li>
+<li>不要使用只有一两个字母的参数名</li>
+<li>不要使用简写，拼出完整的单词</li>
+</ul>
+<p>下面列举了一些常用参数名:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">...action:(SEL)aSelector</span><br><span class="line">...alignment:(int)mode</span><br><span class="line">...atIndex:(int)index</span><br><span class="line">...content:(NSRect)aRect</span><br><span class="line">...doubleValue:(double)aDouble</span><br><span class="line">...floatValue:(float)aFloat</span><br><span class="line">...font:(NSFont *)fontObj</span><br><span class="line">...frame:(NSRect)frameRect</span><br><span class="line">...intValue:(int)anInt</span><br><span class="line">...keyEquivalent:(NSString *)charCode</span><br><span class="line">...length:(int)numBytes</span><br><span class="line">...point:(NSPoint)aPoint</span><br><span class="line">...stringValue:(NSString *)aString</span><br><span class="line">...tag:(int)anInt</span><br><span class="line">...target:(id)anObject</span><br><span class="line">...title:(NSString *)aString</span><br></pre></td></tr></table></figure>
+
+<p><strong>4.命名常量（ Constants ）</strong></p>
+<p>如果要定义一组相关的常量，尽量使用枚举类型（ enumerations ），枚举类型的命名规则和函数的命名规则相同：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//下拉刷新</span><br><span class="line">typedef enum&#123;</span><br><span class="line">    HWRefreshStatuPulling           = 0,//下拉</span><br><span class="line">    HWRefreshStatuRefrshing         = 1,//刷新</span><br><span class="line">    HWRefreshStatuFinish            = 2//刷新完成</span><br><span class="line">&#125;HWRefreshStatus;</span><br><span class="line">//这是SDWebImage的枚举</span><br><span class="line">typedef NS_OPTIONS(NSUInteger, SDWebImageDownloaderOptions) &#123;</span><br><span class="line">    SDWebImageDownloaderLowPriority = 1 &lt;&lt; 0,</span><br><span class="line">    SDWebImageDownloaderProgressiveDownload = 1 &lt;&lt; 1,</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * By default, request prevent the of NSURLCache. With this flag, NSURLCache</span><br><span class="line">     * is used with default policies.</span><br><span class="line">     */</span><br><span class="line">    SDWebImageDownloaderUseNSURLCache = 1 &lt;&lt; 2,</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Call completion block with nil image/imageData if the image was read from NSURLCache</span><br><span class="line">     * (to be combined with `SDWebImageDownloaderUseNSURLCache`).</span><br><span class="line">     */</span><br><span class="line"></span><br><span class="line">    SDWebImageDownloaderIgnoreCachedResponse = 1 &lt;&lt; 3,</span><br><span class="line">    /**</span><br><span class="line">     * In iOS 4+, continue the download of the image if the app goes to background. This is achieved by asking the system for</span><br><span class="line">     * extra time in background to let the request finish. If the background task expires the operation will be cancelled.</span><br><span class="line">     */</span><br><span class="line"></span><br><span class="line">    SDWebImageDownloaderContinueInBackground = 1 &lt;&lt; 4,</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Handles cookies stored in NSHTTPCookieStore by setting </span><br><span class="line">     * NSMutableURLRequest.HTTPShouldHandleCookies = YES;</span><br><span class="line">     */</span><br><span class="line">    SDWebImageDownloaderHandleCookies = 1 &lt;&lt; 5,</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Enable to allow untrusted SSL ceriticates.</span><br><span class="line">     * Useful for testing purposes. Use with caution in production.</span><br><span class="line">     */</span><br><span class="line">    SDWebImageDownloaderAllowInvalidSSLCertificates = 1 &lt;&lt; 6,</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Put the image in the high priority queue.</span><br><span class="line">     */</span><br><span class="line">    SDWebImageDownloaderHighPriority = 1 &lt;&lt; 7,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>枚举也要选取适合自己项目的前缀</strong></p>
+<p><strong>5.命名通知（ Notifications)</strong><br>通知常用于在模块间传递消息，所以通知要尽可能地表示出发生的事件，通知的命名范式是：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[ k ] + Notification + [ 动作 ] + [Did | Will] + [ 状态 ]</span><br><span class="line">kNotificationMessageDidSendFail</span><br></pre></td></tr></table></figure>
+
+<p><strong>6.文件注释</strong><br>每一个文件都必须写文件注释，文件注释通常包含:</p>
+<ul>
+<li>作者信息</li>
+<li>文件包含的内容，作用</li>
+<li>历史版本</li>
+<li>文件所在模块</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/*******************************************************************************</span><br><span class="line"> Author: Sean Xue (Xue yunqiang)</span><br><span class="line"> E-mail: x402399587@163.com</span><br><span class="line"> Description:</span><br><span class="line"> This file provide some covenient tool in calling library tools. One can easily include</span><br><span class="line"> library headers he wants by declaring the corresponding macros.</span><br><span class="line"> I hope this file is not only a header, but also a useful Linux library note.</span><br><span class="line"> History:</span><br><span class="line"> 2012-??-??: On about come date around middle of Year 2012, file created as &quot;commonLib.h&quot;</span><br><span class="line"> 2013-01-07: Add basic data type such as &quot;sint8_t&quot;</span><br><span class="line"> 2013-01-18: Add CFG_LIB_STR_NUM.</span><br><span class="line"> 2013-01-22: Add CFG_LIB_TIMER.</span><br><span class="line"> 2013-01-22: Remove CFG_LIB_DATA_TYPE because there is already AMCDataTypes.h</span><br><span class="line"> ********************************************************************************/</span><br><span class="line"></span><br><span class="line">//</span><br><span class="line">//  ViewController.m</span><br><span class="line">//  LRMacroDefinition</span><br><span class="line">//</span><br><span class="line">//  Created by lu on 16/7/4.</span><br><span class="line">//  Copyright © 2016年 scorpio. All rights reserved.</span><br><span class="line">//</span><br></pre></td></tr></table></figure>
+
+<p><strong>7.代码注释</strong></p>
+<p>按住Command+Option+&#x2F;即可得到</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> &lt;#Description#&gt;</span><br><span class="line"></span><br><span class="line"> @param imageName &lt;#imageName description#&gt;</span><br><span class="line"> @return &lt;#return value description#&gt;</span><br><span class="line"> */</span><br></pre></td></tr></table></figure>
+
+<p>依次注释即可</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//代码样式举例</span><br><span class="line">/**</span><br><span class="line"> 输入图片名获取图片</span><br><span class="line"></span><br><span class="line"> @param imageName 图片名成</span><br><span class="line"> @return UIImage对象</span><br><span class="line"> */</span><br></pre></td></tr></table></figure>
+
+<p><strong>8.import 和 include</strong></p>
+<p>import 是 Cocoa 中常用的引用头文件的方式，它能自动防止重复引用文件，什么时候使用 import ，什么时候使用 include 呢？</p>
+<ul>
+<li>当引用的是一个 Objective-C 或者 Objective-C++ 的头文件时，使用 import</li>
+<li>当引用的是一个 C 或者 C++ 的头文件时，使用 include ，这时必须要保证被引用的文件提供了保护域（ define guard ）。</li>
+</ul>
+<h2 id="二-代码格式"><a href="#二-代码格式" class="headerlink" title="二.代码格式"></a>二.代码格式</h2><p><strong>1.将空格设置为四个空格</strong></p>
+<p>在 Xcode &gt; Preferences &gt; Text Editing 将 Tab 和自动缩进都设置为 4 个空格。</p>
+<p><strong>2.每一行的最大长度</strong></p>
+<p>同样的，在 Xcode &gt; Preferences &gt; Text Editing &gt; Page guide at column: 中将最大行长设置为 80 ，过长的一行代码将会导致可读性问题。</p>
+<p><strong>3.函数的书写</strong></p>
+<p>一个典型的 Objective-C 函数应该是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">- (void)writeVideoFrameWithData:(NSData *)frameData timeStamp:(int)timeStamp &#123;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 - 和 (void) 之间应该有一个空格，第一个大括号 { 的位置在函数所在行的末尾，同样应该有一个空格。</p>
+<p>如果一个函数有特别多的参数或者名称很长，应该将其按照 : 来对齐分行显示：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-(id)initWithModel:(IPCModle)model</span><br><span class="line">        ConnectType:(IPCConnectType)connectType</span><br><span class="line">        Resolution:(IPCResolution)resolution</span><br><span class="line">            AuthName:(NSString *)authName</span><br><span class="line">            Password:(NSString *)password</span><br><span class="line">                MAC:(NSString *)mac</span><br><span class="line">                AzIp:(NSString *)az_ip</span><br><span class="line">                AzDns:(NSString *)az_dns</span><br><span class="line">                Token:(NSString *)token</span><br><span class="line">                Email:(NSString *)email</span><br><span class="line">                Delegate:(id)delegate;</span><br></pre></td></tr></table></figure>
+
+<p>在分行时，如果第一段名称过短，后续名称可以以 Tab 的长度（ 4 个空格）为单位进行缩进：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">    - (void)short:(int)theFoo</span><br><span class="line">      longKeyword:(NSRect)theRect</span><br><span class="line">evenLongerKeyword:(float)theInterval</span><br><span class="line">            error:(NSError **)theError;</span><br></pre></td></tr></table></figure>
+
+<p><strong>4.函数调用</strong><br>函数调用的格式和书写差不多，可以按照函数的长短来选择写在一行或者分成多行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 写在一行</span><br><span class="line">[myObject doFooWith:arg1 name:arg2 error:arg3];</span><br><span class="line">// 分行写，按照 &#x27;:&#x27; 对齐</span><br><span class="line">[myObject doFooWith:arg1</span><br><span class="line">               name:arg2</span><br><span class="line">              error:arg3];</span><br><span class="line">// 第一段名称过短的话后续可以进行缩进</span><br><span class="line">[myObj short:arg1</span><br><span class="line"> longKeyword:arg2</span><br><span class="line">evenLongerKeyword:arg3</span><br><span class="line">        error:arg4];</span><br></pre></td></tr></table></figure>
+
+<p><strong>5.闭包（ Blocks ）</strong></p>
+<ul>
+<li>较短的 block 可以写在一行内。</li>
+<li>如果分行显示的话， block 的右括号 } 应该和调用 block 那行代码的第* 一个非空字符对齐。</li>
+<li>block 内的代码采用 4 个空格 的缩进。</li>
+<li>如果 block 过于庞大，应该单独声明成一个变量来使用。</li>
+<li>^ 和 ( 之间， ^ 和 { 之间都没有空格，参数列表的右括号 ) 和 { 之间有一个空格。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 较短的 block 写在一行内</span><br><span class="line">[operation setCompletionBlock:^&#123; [self onOperationDone]; &#125;];</span><br><span class="line">// 分行书写的 block ，内部使用 4 空格缩进</span><br><span class="line">[operation setCompletionBlock:^&#123;</span><br><span class="line">    [self.delegate newDataAvailable];</span><br><span class="line">&#125;];</span><br><span class="line">// 使用 C 语言 API 调用的 block 遵循同样的书写规则</span><br><span class="line">dispatch_async(_fileIOQueue, ^&#123;</span><br><span class="line">    NSString* path = [self sessionFilePath];</span><br><span class="line">    if (path) &#123;</span><br><span class="line">        // ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">// 较长的 block 关键字可以缩进后在新行书写，注意 block 的右括号 &#x27;&#125;&#x27; 和调用 block 那行代码的第一个非空字符对齐</span><br><span class="line">[[SessionService sharedService]</span><br><span class="line">loadWindowWithCompletionBlock:^(SessionWindow *window) &#123;</span><br><span class="line">    if (window) &#123;</span><br><span class="line">        [self windowDidLoad:window];</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        [self errorLoadingWindow];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line">// 较长的 block 参数列表同样可以缩进后在新行书写</span><br><span class="line">[[SessionService sharedService]</span><br><span class="line">loadWindowWithCompletionBlock:</span><br><span class="line">^(SessionWindow *window) &#123;</span><br><span class="line">    if (window) &#123;</span><br><span class="line">        [self windowDidLoad:window];</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        [self errorLoadingWindow];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line">// 庞大的 block 应该单独定义成变量使用</span><br><span class="line">void (^largeBlock)(void) = ^&#123;</span><br><span class="line">    // ...</span><br><span class="line">&#125;;</span><br><span class="line">[_operationQueue addOperationWithBlock:largeBlock];</span><br><span class="line">// 在一个调用中使用多个 block ，注意到他们不是像函数那样通过 &#x27;:&#x27; 对齐的，而是同时进行了 4 个空格的缩进</span><br><span class="line">[myObject doSomethingWith:arg1</span><br><span class="line">firstBlock:^(Foo *a) &#123;</span><br><span class="line">    // ...</span><br><span class="line">&#125;</span><br><span class="line">secondBlock:^(Bar *b) &#123;</span><br><span class="line">    // ...</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+
+<h2 id="三-代码组织"><a href="#三-代码组织" class="headerlink" title="三.代码组织"></a>三.代码组织</h2><p>在函数分组和protocol&#x2F;delegate实现中使用#pragma mark -来分类方法，要遵循以下一般结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#pragma mark - Lifecycle</span><br><span class="line"></span><br><span class="line">- (instancetype)init &#123;&#125;</span><br><span class="line">- (void)dealloc &#123;&#125;</span><br><span class="line">- (void)viewDidLoad &#123;&#125;</span><br><span class="line">- (void)viewWillAppear:(BOOL)animated &#123;&#125;</span><br><span class="line">- (void)didReceiveMemoryWarning &#123;&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Public</span><br><span class="line"></span><br><span class="line">- (void)publicMethod &#123;&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - Private</span><br><span class="line"></span><br><span class="line">- (void)privateMethod &#123;&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - NSCopying</span><br><span class="line"></span><br><span class="line">- (id)copyWithZone:(NSZone *)zone &#123;&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark - NSObject</span><br><span class="line"></span><br><span class="line">- (NSString *)description &#123;&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>Objectice-C</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>客户端,web 端,微信端设计差别</title>
+    <url>/2017/03/26/design-guide-for-different-device/</url>
+    <content><![CDATA[<p>同一款产品为了更好的用户体验，通常要针对不同平台的特点对产品进行设计的，下面我们来聊一聊同一款产品在客户端（iOS，andriod，winPhone），web及微信端该如何设计。</p>
+<span id="more"></span>
+
+<h3 id="三端差异性对比"><a href="#三端差异性对比" class="headerlink" title="三端差异性对比"></a>三端差异性对比</h3><p><strong>本文中提到的客户端为 ipad 端</strong></p>
+<p><strong>产品体验差异</strong></p>
+<table>
+<thead>
+<tr>
+<th>产品体验</th>
+<th>web 端</th>
+<th>客户端(ipad)</th>
+<th>微信端(iphone)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>屏幕大小</td>
+<td>最大</td>
+<td>较大</td>
+<td>适中</td>
+</tr>
+<tr>
+<td>交互方式</td>
+<td>光标点触</td>
+<td>手指交互</td>
+<td>手指交互</td>
+</tr>
+<tr>
+<td>动作影响范围</td>
+<td>很小</td>
+<td>较大</td>
+<td>较大</td>
+</tr>
+<tr>
+<td>是否可以横屏</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>便携性</td>
+<td>极差</td>
+<td>适中</td>
+<td>很好</td>
+</tr>
+<tr>
+<td>开发人员配置</td>
+<td>产品,服务器,前端, UI, 测试,运维</td>
+<td>产品,服务器,UI,测试,运维</td>
+<td>产品 服务器,测试,运维</td>
+</tr>
+<tr>
+<td>持久化存储</td>
+<td>极差</td>
+<td>较好</td>
+<td>较好</td>
+</tr>
+<tr>
+<td>单一页面功能点</td>
+<td>很多</td>
+<td>较多</td>
+<td>很少</td>
+</tr>
+<tr>
+<td>交互流畅性</td>
+<td>较好</td>
+<td>非常好</td>
+<td>适中</td>
+</tr>
+<tr>
+<td>用户输入文字意愿</td>
+<td>较高</td>
+<td>较低</td>
+<td>适中</td>
+</tr>
+<tr>
+<td>用户使用出发点</td>
+<td>不怕麻烦</td>
+<td>方便使用</td>
+<td>方便使用</td>
+</tr>
+</tbody></table>
+<p><strong>硬件设施差异</strong></p>
+<table>
+<thead>
+<tr>
+<th>硬件设施</th>
+<th>web 端</th>
+<th>客户端(ipad)</th>
+<th>微信端(iphone)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>陀螺仪</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>加速传感器</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>光线传感器</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>支持 flash</td>
+<td>支持</td>
+<td>不支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>支持 蓝牙</td>
+<td>支持(隐藏较深)</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>支持 GPS</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+</tbody></table>
+<p><strong>数据流向差异</strong></p>
+<p><strong>web 端</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">PC上的浏览器 ---data---&gt; 我们的服务器 ---data---&gt; PC上的浏览器</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-563d0fa217a1b400.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p><strong>客户端</strong></p>
+<p><em>http 通讯的情况下</em></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">客户端 ---data---&gt; 我们的服务器 ---data---&gt; 客户端</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-e703a7e29ff72540.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">我们的服务器 ---data---&gt; 苹果的服务器 ---data---&gt; 客户端</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-4e299b6e984e674c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p><strong>微信端</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">手机上的微信端 ---data---&gt; 微信服务器 ---data---&gt; 我们的服务器 ---data---&gt; 手机上的微信端</span><br></pre></td></tr></table></figure>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-2f8214cdade9a85f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">注:我们的服务器向主动和微信企业号通信,可以访问微信的接口,由微信服务器和微信客户端通信,原理都相似,就不画图了.</span><br></pre></td></tr></table></figure>
+
+<h3 id="主要指导原则"><a href="#主要指导原则" class="headerlink" title="主要指导原则"></a>主要指导原则</h3><h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><p><strong>宗旨</strong>:移动端更偏重体验!</p>
+<p>关键词:<a href="%E5%BC%95%E7%94%A8%E8%87%AA%E3%80%8AiOS8%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83%E3%80%8B">^脚注一</a></p>
+<blockquote>
+<ul>
+<li>遵从：UI能够更好地帮助用户理解内容并与之互动，但却不会分散用户对内容本身的注意力。</li>
+<li>清晰：各种大小的文字应该易读，图标应该醒目，去除多余的修饰，突出重点，很好地突显了设计理念。</li>
+<li>深度：视觉的层次和生动的交互动作会赋予UI新的活力，不但帮助用户更好理解新UI的操作并让用户在使用过程中感到惊喜。<br>引用自&lt;iOS8设计规范&gt;</li>
+</ul>
+</blockquote>
+<p>原则:<a href="%E5%BC%95%E7%94%A8%E8%87%AA%E3%80%8AiOS8%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83%E3%80%8B">^脚注二</a></p>
+<blockquote>
+<ul>
+<li>首先，去除了UI元素让应用的核心功能呈现得更加直接并强调其相关性。</li>
+<li>其次，直接使用iOS的系统主题让其成为应用的UI，这样能给用户统一的视觉感受。</li>
+<li>最后，保证你设计的UI可以适应各种设备和不同操作模式，这样用户可以在不同场景下舒适地享用你的应用。</li>
+</ul>
+</blockquote>
+<p><strong>特点</strong>:</p>
+<ol>
+<li>客户端只要通过用户的触摸,拖拽来完成交互.</li>
+<li>屏幕比较大.</li>
+<li>便携性适中</li>
+</ol>
+<p><strong>原理</strong>:客户端是一个基于苹果公司的iOS操作系统上面的一个软件(进程),相对于 PC 来说,性能略差,不处理过于复杂的逻辑.所以需要和服务器来进行交互,如果把服务器比喻为数据的加工者,那么客户端就是数据采集以及数据展示者.当然客户端也可以有浏览器,只不过性能比 PC 上的浏览器略差,但是客户端的浏览器的独特之处在于他可以和客户端之间进行一些交互(比如点击客户端网页上的某个按钮,弹出客户端的提示框).</p>
+<p><strong>局限性</strong></p>
+<ol>
+<li>客户端的局限性是他的性能没有 pc 好</li>
+<li>屏幕在功能设计上的局限性也是有的,这也是屏幕,体积的双刃剑</li>
+<li>点触没有鼠标精准,这也是客户端本身的局限性,也是一把双刃剑</li>
+</ol>
+<p><strong>优点</strong></p>
+<ol>
+<li>交互性较强,手指操作灵活</li>
+<li>便携,走到哪拿到哪</li>
+<li>持久化存储方便,可以针对用户这个点,提升很强的定制化</li>
+</ol>
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-fdb61635aa84d1ab.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="14900839448012.jpg"></p>
+<p>####web 端</p>
+<p><strong>宗旨</strong>:web 端相对比较偏功能和内容!</p>
+<p><strong>特点</strong>:</p>
+<ol>
+<li>web 端只要通过鼠标点击来完成交互</li>
+<li>屏幕很大,鼠标较小,所以点击可以很精准.</li>
+<li>便携性基本没有</li>
+</ol>
+<p><strong>原理</strong>: web 端是通过浏览器来对服务器进行交互的,其实 web 端的浏览器也是一个软件(进程),其功能强大,相比服务器,网页就是信息的采集者和展示者, web 端想和服务器交互有两种方式.</p>
+<ol>
+<li>html 通过http(短连接)来进行表单提交,服务端返回数据的时候,利用浏览器进行渲染.</li>
+<li>html 通过 js 来进行一些事件的驱动来让浏览器做一些事情,并发送 http(短连接)来和服务器进行交互,服务端返回数据的时候,利用js 和浏览器进行一系列事件的触发.</li>
+</ol>
+<p><strong>局限性</strong></p>
+<ol>
+<li>pc 携带不便是他致命的弱点,谁没事拿着电脑到处跑啊?</li>
+<li>通过网址来登录,没有点击就出现的效果好</li>
+<li>复杂持久化存储机制不完善,开发者不能利用 web 端去给做一些针对用户个性化的持久化存储</li>
+</ol>
+<p><strong>优势</strong></p>
+<ol>
+<li>可以进行复杂的操作</li>
+<li>屏幕大,看着很爽</li>
+</ol>
+<p>web端的优势就是源于性能较好的 PC 端和强大的浏览器来和用户进行一系列较复杂的操作.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-20b665ad294e8e5b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="14900816447614.jpg"></p>
+<p>功能强大,一个界面布满所有功能.</p>
+<p>####微信端</p>
+<p><strong>宗旨</strong>:微信端设计更加轻量级,简单功能的完成,一些信息的传递.</p>
+<p><strong>特点</strong>:</p>
+<ol>
+<li>微信端主要靠下面的选项栏和发消息(发送指定消息,返回给用户一些信息)来完成交互</li>
+<li>屏幕较小</li>
+<li>便携性较强</li>
+</ol>
+<p><strong>原理</strong>:前面我们提到,客户端是一个基于苹果公司的iOS操作系统上面的一个软件(进程),相对于 PC 来说,性能略差,那么微信端就是微信这个软件给一些公司提供的接口,微信的用户量较大,所以可以通过向一些有意向在微信上展示自己信息的公司收费,然后他们给我们提供接口,让我们可以再微信上展示一些我们自己的信息(按照他们的要求),所以微信端的开发是我们的后台开发人员通过他们的接口给腾讯的服务器提供数据,腾讯的服务器再去通知他们的客户端进行一些我们公司的信息展示</p>
+<p>微信端的功能可以划分为两种</p>
+<ol>
+<li>我们提供按照要求给他们服务器数据,他们服务器传递数据给微信,微信在他们的软件上进行一些展示(按照一种特定的形式)</li>
+<li>我们给他们一个链接地址(web 端的页面),他们用软件内的浏览器进行一些展示.</li>
+</ol>
+<p><strong>局限性</strong></p>
+<ol>
+<li>既然使用别人的软件去展示你的信息,那么就要按照人家的规矩来.</li>
+<li>目前微信提供的服务还不是很丰富,所以对业务展示来说,不能很好地支持,只能展示一些比较简单的信息.</li>
+</ol>
+<p><strong>优点</strong></p>
+<ol>
+<li>微信的用户基数大,让用户了解我们产品的代价较低,所以进行一些基本信息的展示效果很不错.可以通过新本信息去吸引用户去下载我们的 app</li>
+<li>用户在接受我们信息的时候代价较低,人人都玩微信,获取我们信息很方便.</li>
+</ol>
+<p>附:<br><a href="https://www.iamue.com/14576">ios8设计规范 中文版 完整版</a></p>
+]]></content>
+      <tags>
+        <tag>Design</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Effective Objective-C 2.0 笔记(一)</title>
+    <url>/2017/06/04/effective-Objective-C-one/</url>
+    <content><![CDATA[<p>编写高质量的 iOS 和 OS X 代码的52个有效办法-读书笔记</p>
+<p>最近在读<code>Effective Objective-C 2.0</code>,想做一下记录,我是挑选自己感兴趣的,和书中的顺序不一样,看到那写到哪</p>
+<span id="more"></span>
+
+<h2 id="第4条-多用类型常量-少用-define-预处理命令"><a href="#第4条-多用类型常量-少用-define-预处理命令" class="headerlink" title="第4条:多用类型常量,少用 #define 预处理命令"></a>第4条:多用类型常量,少用 #define 预处理命令</h2><p>在定义常量的时候,我们通常需要确定一下几件事:</p>
+<ol>
+<li><code>常量代表的含义</code></li>
+<li><code>常量的作用域</code></li>
+<li><code>什么样的常量的命名方式简单易懂?</code></li>
+</ol>
+<p>如果我们定义个动画时间的时候,我们通常会这么定义</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#define ANIMATION_DURATION 0.3</span><br></pre></td></tr></table></figure>
+
+<p>这么定义的缺点是</p>
+<ul>
+<li><code>常量代表的含义</code>不清晰,未明确指出0.3与时间有关.</li>
+<li><code>常量的作用域</code>过大,预处理过程会把碰到所有的<code>ANIMATION_DURATION</code>一律替换成0.3,这样的话,假设此指令声明在某个头文件中,那么引入这个头文件的代码中的<code>ANIMATION_DURATION</code>都会被替换掉,所以说即使你使用#define定义常量,也要放在 <code>.m</code>文件里</li>
+<li><code>什么样的常量的命名方式简单易懂?</code>,这种命名方式,没有规范,下面会介绍一下规范的定义常量</li>
+</ul>
+<p>正确的定义方式应该按照下面两种方式:</p>
+<p>第一,常量的作用域仅在当前类,即<code>局部常量</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//in the implementation file - EOCAnimatedView.m</span><br><span class="line">static const NSTimeInterval kAnimationDuration = 0.3;</span><br></pre></td></tr></table></figure>
+
+<p>第二,常量的作用域在所有引用了当前类的代码中,即<code>全局常量</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//in the header file - EOCAnimatedView.h</span><br><span class="line">extern const NSTimeInterval EOCAnimatedViewAnimationDuration;</span><br><span class="line"></span><br><span class="line">//in the implementation file - EOCAnimatedView.m</span><br><span class="line">const NSTimeInterval EOCAnimatedViewAnimationDuration = 0.3;</span><br></pre></td></tr></table></figure>
+
+<p>为什么要这样定义呢?</p>
+<ol>
+<li><code>常量代表的含义</code>明确,0.3与时间有关,所以我们用<code>NSTimeInterval</code>表示,这样容易让人理解</li>
+<li><code>常量的作用域</code>明确,常量的作用域仅在当前类时,我们用第一种方法定义,常量的作用域在所有引用了当前类的代码中,即<code>全局变量</code>我们用第二种方式定义</li>
+<li><code>什么样的常量的命名方式简单易懂?</code>若某常量局限于<code>编译单元(translation unit)</code> 也就是”实现文件”即<code>.m</code>文件,则在前面加字母<code>k</code>,因为<code>局部变量</code>仅在当前类使用,所以不用加以区分,若常量在类外可见,则通常以类名为前缀,因为<code>全局常量</code>加入到<code>全局常量表</code>中,必须用类名加以区分</li>
+</ol>
+<p>为什么我们不能在.h文件里面定义<code>局部常量</code>?</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">局部常量`的定义不应该出现在`.h`文件里,因为 OC 没有 namespace 这个概念,所有引入这份头文件的其他文件都会出现这个名字,如果在`局部常量`的定义出现在`.h`文件里,就等于声明了一个`kAnimationDuration`的`全局常量</span><br></pre></td></tr></table></figure>
+
+<p>为什么常量的作用域仅在当前类时,我们用第一种方法定义?</p>
+<p>因为<code>static</code> 修饰符意味着该常量仅定义在定义该<code>常量的编译单元中(.m)</code>可见, 编译器每收到一个编译单元,就会输出一份<code>目标文件(object file)</code>,如声明此常量不加<code>static</code>,编译器会为它创建一个<code>外部符号(external symbol)</code>, 此时,另一个编译也声明了同名变量,那么编译器就会报错.</p>
+<p>为什么常量的作用域在所有引用了当前类的代码中,即<code>全局变量</code>我们用第二种方式定义?</p>
+<p><code>全局常量</code>需要放在<code>全局符号表(global symbol table)</code> 中,这种常量的定义是在头文件<code>声明</code>,在实现文件里<code>定义</code>,这样,编译器在使用此常量的时候无需查看其定义,即允许代码使用此常量,因为他知道,当链接成二进制文件之后,肯定能找到这个常量.</p>
+<p>Note:</p>
+<ul>
+<li>常量的定义应该从右到左解读</li>
+<li>使用<code>第二种定义</code>优于使用<code>#define</code>,因为<code>#define</code>定义出来的常量不含类型信息,编译器只会在编译前据此执行查找与替换操作,即使有人重新定义了常量值,编译器也不会产生警告信息,这将导致应用程序中的常量值不一致</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>Objectice-C</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>配置一个炫酷的终端</title>
+    <url>/2017/06/11/how-to-make-a-cool-terminal/</url>
+    <content><![CDATA[<p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/09/terminal.png" alt="title"></p>
+<p>我们每天都在使用终端工具，配置的好看些，可以让我们在工作的时候有一个愉悦的心情 :)</p>
+<span id="more"></span>
+
+<p>这个终端是<a href="http://iterm2.com/">iTerm2</a>，<code>MAC OS</code>下一个非常牛逼的终端。顺利通过官网下载安装，然后开始配置过程。</p>
+<h2 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h2><p>按<code>Command + ,</code>打开偏好设定窗口：<code>Profiles / Window</code>，把<code>Settings for New Windows</code>中的Style改成<code>Left of Screen</code>让它在屏幕左侧显示（在宽屏显示器上效果不错） 勾选<code>Hotkey</code>中的<code>Show/hide iTerm2 with a system-wide hotkey</code>，然后设定一个热键。我个人偏爱 <code>Command + ;</code>。 现在按<code>Command + ;</code>.就可以随时调出或者隐藏<code>iTerm2</code>了。 你还可以在<code>Profile</code>中更改字体等，其他的希望大家自己研究。</p>
+<h2 id="配色方案"><a href="#配色方案" class="headerlink" title="配色方案"></a>配色方案</h2><p><a href="http://ethanschoonover.com/solarized">Solarized</a>可以说是目前网络上最流行的配色解决方案，其优美的配色和众多软件的支持，成就了她现在的火爆。我们这里就使用它来进行<code>iTerm2</code>的配色 下载，解压，打开<code>iTerm2</code>的偏好设定，<code>Profiles / Colors</code>，最下面的<code>Load Presets ... / Import...</code> 直接加载<code>iterm2-colors-solarized/Solarized Dark.itermcolors</code>配色方案就可以了，这时候可以看到。看到效果了。</p>
+<p>其实到这一步，<code>iTerm2</code>看上去已经好多了，但是为了能让它的样子更风骚，我们需要进一步配置。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">zsh`和`oh-my-zsh</span><br></pre></td></tr></table></figure>
+
+<p>众所周知在<code>Unix/Linux</code>系统下是存在很多不同的<code>shell</code>，常见的就有<code>bash</code>, <code>csh</code>，<code>ksh</code>，<code>zsh</code>等等。在<code>Linux</code>和<code>MAC OS</code>系统中，默认使用的是<code>bash</code>。这里我们要是功能更加强大的 <code>zsh</code>。这里可以通过<code>Homebrew</code>下载安装<code>zsh</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">brew install zsh</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后，将<code>zsh</code>设置成系统默认<code>shell</code>，以代替<code>bash</code>。 用编辑器打开<code>/etc/shells</code>，在末尾添加<code>/usr/local/bin/zsh</code>,保存关闭。 在终端中执行以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">chsh -s /usr/local/bin/zsh</span><br></pre></td></tr></table></figure>
+
+<p>然后重新启动<code>iTerm2</code>，<code>zsh</code>就已经被配置成默认的<code>shell</code>了。</p>
+<p>此时的<code>zsh</code>还是最初始的样子，我们要将其变成强大的终端，需要对其进行配置，为了让<code>zsh</code>产生想上面图片那样的效果，我们需要安装<code>oh-my-zsh</code>。</p>
+<p><code>oh-my-zsh</code>是一个功能强大框架，发布于<code>Github</code>。它可以让你以纯傻瓜的方式对zsh进行配置已得到强大的功能，这里是其<a href="https://github.com/robbyrussell/oh-my-zsh">发布页面</a>，如果有什么疑问，都可以去这个页面进行查询，里面有最详细的说明。 <code>on-my-zsh</code>的安装支持自动和手动，为了省去麻烦，我建议优先使用自动，如果要使用手动安装，请查看安装说明。这里只说一下自动安装。 在终端里，如果你有<code>curl</code>，则在终端输入</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">curl -L http://install.ohmyz.sh | sh</span><br></pre></td></tr></table></figure>
+
+<p>如果你使用<code>wget</code>,则在终端输入</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget --no-check-certificate http://install.ohmyz.sh -O - | sh</span><br></pre></td></tr></table></figure>
+
+<p>这样<code>oh-my-zsh</code>就安装完成了。开始对其进行配置。</p>
+<p><code>zsh</code>的配置几乎都在<code>~/.zshrc</code>下面，用编辑器打开文件，你会看到很多选项，建议你感觉自己的需求进行配置，不懂得可以查询文档。这里我只说一下主题的配置。在<code>~/.oh-my-zsh/themes</code>存在各式各样的主题文件，每个主题的样子你可以通过这个<a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Themes">网址</a>进行查看，选好样式后，在<code>.zshrc</code>中的<code>ZSH_THEME</code>设置成你所选用的主题。重启<code>iTerm2</code>，便可以看到相应的效果。这里建议使用<code>agnoster</code>，比较好看。</p>
+<p>做完上步后，<code>iTerm2</code>的大概样子应该跟我们的第一张图片差不多了，但是没有图片中的箭头，那是因为产生箭头效果是需要特殊字体支持的，这个字体最开始是一个叫<a href="https://powerline.readthedocs.org/">Powerline</a>的项目开始的，其目的是美化<code>Vim</code>中操作栏的字体状态使其产生箭头效果，当然这个被移植到了<code>iTerm2</code>上。</p>
+<p>要使用这种字体,需要做如下的事情</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># clone</span><br><span class="line">git clone https://github.com/powerline/fonts.git</span><br><span class="line"># install</span><br><span class="line">cd fonts</span><br><span class="line">./install.sh</span><br><span class="line"># clean-up a bit</span><br><span class="line">cd ..</span><br><span class="line">rm -rf fonts</span><br></pre></td></tr></table></figure>
+
+<p>安装完成之后,需要在<code>iTerm2</code>做如下配置</p>
+<p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/09/terminal.png" alt="Text 配置"></p>
+<p>配置完成之后,最终的效果便跟第一张图片中样式一样了。</p>
+<h2 id="更多的配色方案"><a href="#更多的配色方案" class="headerlink" title="更多的配色方案"></a>更多的配色方案</h2><p><code>Solarized</code>虽然很好，但是使用久了终究会变得平淡，这时候我们要换换主题，<code>Github</code>上有一个项目可以使用非常丰富的主题库，地址在<a href="https://github.com/mbadolato/iTerm2-Color-Schemes">这里</a>，上面有详细的安装步骤，你可以根据自己的喜好来选择主题了。</p>
+<p>至此，<code>iTerm2</code>的配置告一段落了，其他的，就需要大家在使用中不断的熟悉和配置你的终端了。</p>
+<h2 id="终端的更多配置"><a href="#终端的更多配置" class="headerlink" title="终端的更多配置"></a>终端的更多配置</h2><p>其实 <code>zsh</code>功能比<code>bash</code>好用且强大多了！特别是他的自动补全功能还有自定义功能,还有自动纠错能力，命令颜色高亮等！<a href="http://www.cnblogs.com/ma6174/archive/2012/05/08/2490921.html">这里</a>提供了一些<code>zsh</code>的配置方案,供大家参考一下</p>
+<p>配置了这么炫酷的终端,在你<code>open</code>一些文件的时候,会使用默认的文本编辑器打开,这会让大家很不爽,比如如果使用默认的文本编辑器编辑<code>Podfile</code> 的时候,会出现一些问题,这时候我们想要把默认的文本编辑器替换成 <code>Sublime</code>,<a href="http://xiaoyu2er.github.io/2016/01/31/mac-default-app-for-spec-file-type/">这里</a>为大家提功了参考方案</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://laoshuterry.gitbooks.io/mac_os_setup_guide/content/4_ZshConfig.html">https://laoshuterry.gitbooks.io/mac_os_setup_guide/content/4_ZshConfig.html</a></p>
+<p><a href="https://github.com/powerline/fonts/issues/44">https://github.com/powerline/fonts/issues/44</a></p>
+<p><a href="http://www.cnblogs.com/ma6174/archive/2012/05/08/2490921.html">http://www.cnblogs.com/ma6174/archive/2012/05/08/2490921.html</a></p>
+<p><a href="http://xiaoyu2er.github.io/2016/01/31/mac-default-app-for-spec-file-type/">http://xiaoyu2er.github.io/2016/01/31/mac-default-app-for-spec-file-type/</a></p>
+]]></content>
+      <tags>
+        <tag>Tool</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS字典的排序问题</title>
+    <url>/2017/02/19/map-sort-ios/</url>
+    <content><![CDATA[<p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/12/sort.PNG" alt="title"></p>
+<span id="more"></span>
+
+<p>在日常开发中,经常会遇到根据字典的Key对Value进行排序的问题,所以对于此类问题抽出一个通用方法,废话不多说,下面是代码.</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> 对字典(Key-Value)排序 区分大小写</span><br><span class="line"></span><br><span class="line"> @param dict 要排序的字典</span><br><span class="line"> */</span><br><span class="line">- (void)sortedDictionary:(NSDictionary *)dict&#123;</span><br><span class="line">    </span><br><span class="line">    //将所有的key放进数组</span><br><span class="line">    NSArray *allKeyArray = [dict allKeys];</span><br><span class="line">    </span><br><span class="line">    //序列化器对数组进行排序的block 返回值为排序后的数组</span><br><span class="line">    NSArray *afterSortKeyArray = [allKeyArray sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id</span><br><span class="line">    Nonnull obj2) &#123;</span><br><span class="line">        /**</span><br><span class="line">          In the compare: methods, the range argument specifies the</span><br><span class="line">          subrange, rather than the whole, of the receiver to use in the</span><br><span class="line">          comparison. The range is not applied to the search string.  For</span><br><span class="line">          example, [@&quot;AB&quot; compare:@&quot;ABC&quot; options:0 range:NSMakeRange(0,1)]</span><br><span class="line">          compares &quot;A&quot; to &quot;ABC&quot;, not &quot;A&quot; to &quot;A&quot;, and will return</span><br><span class="line">          NSOrderedAscending. It is an error to specify a range that is</span><br><span class="line">          outside of the receiver&#x27;s bounds, and an exception may be raised.</span><br><span class="line">         </span><br><span class="line">        - (NSComparisonResult)compare:(NSString *)string;</span><br><span class="line">         </span><br><span class="line">         compare方法的比较原理为,依次比较当前字符串的第一个字母:</span><br><span class="line">         如果不同,按照输出排序结果</span><br><span class="line">         如果相同,依次比较当前字符串的下一个字母(这里是第二个)</span><br><span class="line">         以此类推</span><br><span class="line">         </span><br><span class="line">         排序结果</span><br><span class="line">         NSComparisonResult resuest = [obj1 compare:obj2];为从小到大,即升序;</span><br><span class="line">         NSComparisonResult resuest = [obj2 compare:obj1];为从大到小,即降序;</span><br><span class="line">         </span><br><span class="line">         注意:compare方法是区分大小写的,即按照ASCII排序</span><br><span class="line">         */</span><br><span class="line">        //排序操作</span><br><span class="line">        NSComparisonResult resuest = [obj1 compare:obj2];</span><br><span class="line">        return resuest;</span><br><span class="line">    &#125;];</span><br><span class="line">    NSLog(@&quot;afterSortKeyArray:%@&quot;,afterSortKeyArray);</span><br><span class="line">    </span><br><span class="line">    //通过排列的key值获取value</span><br><span class="line">    NSMutableArray *valueArray = [NSMutableArray array];</span><br><span class="line">    for (NSString *sortsing in afterSortKeyArray) &#123;</span><br><span class="line">        NSString *valueString = [dict objectForKey:sortsing];</span><br><span class="line">        [valueArray addObject:valueString];</span><br><span class="line">    &#125;</span><br><span class="line">    NSLog(@&quot;valueArray:%@&quot;,valueArray);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码中提到了排序是按照ASCII码排序,因为ASCII码表示区分大小写的,所以我们的排序结果也区分大小写.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-616c5fd38d77672a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="ASCII"></p>
+<p>如果不想区分大小写,可以在比较前,可以用lowercaseString方法将字符串转换为小写.代码如下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> 对字典(Key-Value)排序 不区分大小写</span><br><span class="line"> </span><br><span class="line"> @param dict 要排序的字典</span><br><span class="line"> */</span><br><span class="line">- (void)sortedDictionarybyLowercaseString:(NSDictionary *)dict&#123;</span><br><span class="line">    </span><br><span class="line">    //将所有的key放进数组</span><br><span class="line">    NSArray *allKeyArray = [dict allKeys];</span><br><span class="line">    </span><br><span class="line">    //序列化器对数组进行排序的block 返回值为排序后的数组</span><br><span class="line">    NSArray *afterSortKeyArray = [allKeyArray sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id</span><br><span class="line">    Nonnull obj2) &#123;</span><br><span class="line">/**</span><br><span class="line">          In the compare: methods, the range argument specifies the</span><br><span class="line">          subrange, rather than the whole, of the receiver to use in the</span><br><span class="line">          comparison. The range is not applied to the search string.  For</span><br><span class="line">          example, [@&quot;AB&quot; compare:@&quot;ABC&quot; options:0 range:NSMakeRange(0,1)]</span><br><span class="line">          compares &quot;A&quot; to &quot;ABC&quot;, not &quot;A&quot; to &quot;A&quot;, and will return</span><br><span class="line">          NSOrderedAscending. It is an error to specify a range that is</span><br><span class="line">          outside of the receiver&#x27;s bounds, and an exception may be raised.</span><br><span class="line">         </span><br><span class="line">        - (NSComparisonResult)compare:(NSString *)string;</span><br><span class="line">         </span><br><span class="line">         compare方法的比较原理为,依次比较当前字符串的第一个字母:</span><br><span class="line">         如果不同,按照输出排序结果</span><br><span class="line">         如果相同,依次比较当前字符串的下一个字母(这里是第二个)</span><br><span class="line">         以此类推</span><br><span class="line">         </span><br><span class="line">         排序结果</span><br><span class="line">         NSComparisonResult resuest = [obj1 compare:obj2];为从小到大,即升序;</span><br><span class="line">         NSComparisonResult resuest = [obj2 compare:obj1];为从大到小,即降序;</span><br><span class="line">         </span><br><span class="line">         注意:compare方法是区分大小写的,即按照ASCII排序</span><br><span class="line">         */</span><br><span class="line">        //小写转化</span><br><span class="line">        obj1 = [obj1 lowercaseString];</span><br><span class="line">        obj2 = [obj2 lowercaseString];</span><br><span class="line">        //排序操作</span><br><span class="line">        NSComparisonResult resuest = [obj1 compare:obj2];</span><br><span class="line">        return resuest;</span><br><span class="line">    &#125;];</span><br><span class="line">    NSLog(@&quot;afterSortKeyArray:%@&quot;,afterSortKeyArray);</span><br><span class="line">    </span><br><span class="line">    //通过排列的key值获取value</span><br><span class="line">    NSMutableArray *valueArray = [NSMutableArray array];</span><br><span class="line">    for (NSString *sortsing in afterSortKeyArray) &#123;</span><br><span class="line">        NSString *valueString = [dict objectForKey:sortsing];</span><br><span class="line">        [valueArray addObject:valueString];</span><br><span class="line">    &#125;</span><br><span class="line">    NSLog(@&quot;valueArray:%@&quot;,valueArray);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="简单测试代码"><a href="#简单测试代码" class="headerlink" title="简单测试代码"></a>简单测试代码</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:@&quot;Danny&quot;,@&quot;Basd&quot;,@&quot;12&quot;,@&quot;Cerff&quot;,@&quot;man&quot;,@&quot;ABCDEFG&quot;,@&quot;Sean&quot;,@&quot;Cerf&quot;,nil];</span><br><span class="line">    NSLog(@&quot;dictionary:%@&quot;,dict);</span><br><span class="line">    [self sortedDictionary:dict];</span><br></pre></td></tr></table></figure>
+
+<h6 id="输出为"><a href="#输出为" class="headerlink" title="输出为:"></a>输出为:</h6><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">2017-02-12 11:23:03.484 根据key对dictionary排序[6122:164377] dictionary:&#123;</span><br><span class="line">    ABCDEFG = 12345;</span><br><span class="line">    Basd = Rddd;</span><br><span class="line">    Cerf = Sean;</span><br><span class="line">    Cerff = iiiii;</span><br><span class="line">&#125;</span><br><span class="line">2017-02-12 11:23:03.484 根据key对dictionary排序[6122:164377] afterSortKeyArray:(</span><br><span class="line">    ABCDEFG,</span><br><span class="line">    Basd,</span><br><span class="line">    Cerf,</span><br><span class="line">    Cerff</span><br><span class="line">)</span><br><span class="line">2017-02-12 11:23:03.485 根据key对dictionary排序[6122:164377] valueArray:(</span><br><span class="line">    12345,</span><br><span class="line">    Rddd,</span><br><span class="line">    Sean,</span><br><span class="line">    iiiii</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h4 id="代码此时例子较多-就不都放上来了-大家可放心食用"><a href="#代码此时例子较多-就不都放上来了-大家可放心食用" class="headerlink" title="代码此时例子较多,就不都放上来了,大家可放心食用."></a>代码此时例子较多,就不都放上来了,大家可放心食用.</h4>]]></content>
+      <tags>
+        <tag>Objectice-C</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>关于MD5安全性的讨论</title>
+    <url>/2017/01/05/md5/</url>
+    <content><![CDATA[<p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/12/md5.PNG" alt="title"></p>
+<p>MD5本身是不可逆和无冲突的,但是用一些巧妙地方法会被破解出来.一个密码系统的是没有绝对安全的,密码系统只是增加了被破解的代价.</p>
+<span id="more"></span>
+
+<h2 id="MD5的常识性知识"><a href="#MD5的常识性知识" class="headerlink" title="MD5的常识性知识"></a>MD5的常识性知识</h2><ul>
+<li>一个密码系统的安全性只在于密钥的保密性，而不在于算法的保密性.</li>
+<li>MD5就是把不论什么长度的文字内容，给精简成128位散列数.不论文字内容只有一个字母a，还是1w多字的长篇论文，都精简（或填充）成128位散列数.</li>
+<li>MD5主要用在文档校验上，用来生成密钥检测文档是否被篡改.</li>
+<li>MD5算法本身是不可被破解的.</li>
+<li>目前没有软件能有效地破解 MD5.大多数时候只是把常见字符串的 MD5 存了起来为彩虹表，通过一定的算法,进行匹配.</li>
+<li>厉害的软件还会在彩虹桥的基础上加入哈希碰撞.</li>
+<li>MD5 目前来说还是可以用的，尤其是考虑到合适的加盐以后可以解决大多数彩虹表带来的危险.<br>所有的不被破解的基础,一定要做到秘钥保密!秘钥保密!秘钥保密!</li>
+</ul>
+<h2 id="一些知识点的补充"><a href="#一些知识点的补充" class="headerlink" title="一些知识点的补充"></a>一些知识点的补充</h2><h3 id="哈希"><a href="#哈希" class="headerlink" title="哈希"></a>哈希</h3><p>Hash，一般翻译做”散列”，也有直接音译为”哈希”的，就是把任意长度的输入（又叫做预映射， pre-image），通过散列算法，变换成固定长度的输出，该输出就是散列值。这种转换是一种压缩映射，也就是，散列值的空间通常远小于输入的空间，不同的输入可能会散列成相同的输出，而不可能从散列值来唯一的确定输入值.<br>简单的说就是一种将任意长度的消息压缩到某一固定长度的信息摘要的函数.<br>HASH主要用于信息安全领域中加密算法，他把一些不同长度的信息转化成杂乱的128位的编码里,叫做HASH值. 也可以说，hash就是找到一种数据内容和数据存放地址之间的映射关系.<br>Hash算法在信息安全方面的应用主要体现在以下的3个方面：</p>
+<ol>
+<li>文件校验<br>我们比较熟悉的校验算法有奇偶校验和CRC校验，这2种校验并没有抗数据篡改的能力，它们一定程度上能检测并纠正数据传输中的信道误码，但却不能防止对数据的恶意破坏.<br>MD5 Hash算法的”数字指纹”特性，使它成为目前应用最广泛的一种文件完整性校验和(Checksum)算法，不少Unix系统有提供计算md5 checksum的命令.</li>
+<li>数字签名<br>Hash 算法也是现代密码体系中的一个重要组成部分。由于非对称算法的运算速度较慢，所以在数字签名协议中，单向散列函数扮演了一个重要的角色。 对 Hash 值，又称”数字摘要”进行数字签名，在统计上可以认为与对文件本身进行数字签名是等效的.而且这样的协议还有其他的优点.</li>
+<li>鉴权协议<br>如下的鉴权协议又被称作”挑战–认证模式：在传输信道是可被侦听，但不可被篡改的情况下，这是一种简单而安全的方法.</li>
+</ol>
+<p><strong>-以上解释摘自百度</strong></p>
+<h3 id="彩虹表"><a href="#彩虹表" class="headerlink" title="彩虹表"></a>彩虹表</h3><p>如果将哈希后的密文比作一把锁，暴力破解的方法就是现场制作各种各样不同齿形的钥匙，再来尝试能否开锁，这样耗时无疑很长；我以前错误理解的“彩虹表”，是事先制作好所有齿形的钥匙，全部拿过来尝试开锁，这样虽然省去了制作钥匙的时间，但是后来发现这些钥匙实在是太多了，没法全部带在身上。而真正的彩虹表，是将钥匙按照某种规律进行分组，每组钥匙中只需要带最有特点的一个，当发现某个“特征钥匙”差一点就能开锁了，则当场对该钥匙进行简单的打磨，直到能开锁为止。这种方法是既省力又省时的.</p>
+<h3 id="哈希碰撞"><a href="#哈希碰撞" class="headerlink" title="哈希碰撞"></a>哈希碰撞</h3><p>哈希碰撞就是一种优化过算法,其基本原理就是把密码明文对应的MD5与你的MD5进行对比,因为经过一些优化,所以无论是时间上,还是空间都很很快.其优化方法我也没研究过,不过感兴趣的可以查一下王小云教授关于哈希碰撞的论文.</p>
+<h2 id="常用破解MD5方法"><a href="#常用破解MD5方法" class="headerlink" title="常用破解MD5方法"></a>常用破解MD5方法</h2><p>目前来说,破解MD5加密的最有效的方法就是 <strong>哈希碰撞+彩虹表+对应秘钥</strong>,一些网络黑客会在一些明文存储用户密码的网站上窃取信息,假如黑客有一亿条数据,因为都是真实用户所以经过哈希碰撞之后,你的密码被破译出来的几率就真的非常大了,那破译不出来的可能就是因为大小写和一些特殊符号,这就用到了彩虹表,最后就是你的秘钥,比如你是之前对用户的密码进行加盐,还是之后对MD5之后的字符串进行的特殊处理,只要对方知道你的秘钥,那么你密码被破译出来的几率就非常非常高了,所以我们说: <strong>一个密码系统的安全性只在于密钥的保密性，而不在于算法的保密性.</strong></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>MD5本身是不可逆和无冲突的,但是用一些巧妙地方法会被破解出来.一个密码系统的是没有绝对安全的,密码系统只是增加了被破解的代价.</p>
+<p>PS:一切明文存储用户密码的网站都是耍流氓!</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1401726-32ca4ee535719034.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="lol"></p>
+]]></content>
+      <tags>
+        <tag>Objectice-C</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS项目开发中使用protobuf</title>
+    <url>/2016/12/11/protobuf-in-iOS/</url>
+    <content><![CDATA[<p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2019/12/protobuf.PNG" alt="title"></p>
+<span id="more"></span>
+
+<h2 id="背景信息"><a href="#背景信息" class="headerlink" title="背景信息"></a>背景信息</h2><p>最近公司中的项目使用到了protobuf,因为开始没有接触过,所以对protobuf进行了一些粗浅的了解,大体来说,protobuf就是一种把某种数据结构的信息，以某种格式保存起来。主要用于数据存储、传输,你可以把protobuf理解成一种代替XML的东西,protobuf的优势在于:</p>
+<ul>
+<li>相同的数据protobuf相比XML更加的轻量级,更加节省每次传输的数据量.</li>
+<li>protobuf是google公司的开源项目,这个项目是有稳定支撑的,停止更新和优化的几率非常低,而且专业性更强.</li>
+<li>因为是开源项目所以只要你能力足够,你可以随意更改,随意个性化到你们自己的需求.</li>
+</ul>
+<p>如果你想更加深入的了解protobuf你可以再看一下<a href="http://blog.csdn.net/caisini_vc/article/details/5599468">扫盲文章</a>,或者看一下<a href="https://github.com/google/protobuf/tree/master/objectivec">项目源码</a>.好了,废话不多说,下面我们就为将protobuf集成到项目中做一些必要的准备吧.</p>
+<h3 id="安装Protobuf编译器"><a href="#安装Protobuf编译器" class="headerlink" title="安装Protobuf编译器"></a>安装Protobuf编译器</h3><p>在terminal输入brew -v检查MAC是否装有brew,如果没有安装,请自行百度安装 : )<br>如果已经安装brew,就开始部署环境吧</p>
+<ol>
+<li>brew install automake</li>
+<li>git clone <a href="https://github.com/google/protobuf">https://github.com/google/protobuf</a></li>
+<li>按照terminal的提示继续输入命令.&#x2F;configure CXXFLAGS&#x3D;-I&#x2F;usr&#x2F;local&#x2F;include LDFLAGS&#x3D;-L&#x2F;usr&#x2F;local&#x2F;lib</li>
+</ol>
+<p>如果提示你<br>libtool: install: &#x2F;usr&#x2F;bin&#x2F;install -c protoc-gen-objc &#x2F;usr&#x2F;local&#x2F;bin&#x2F;protoc-gen-objc<br>就说明已经安装成功了.<br>按照以上命令进行环境部署后,尽可以进入下一步了.</p>
+<h3 id="创建proto文件"><a href="#创建proto文件" class="headerlink" title="创建proto文件"></a>创建proto文件</h3><p>proto文件是需要你和要进行通讯的一方制定的,这个一般是服务器,这里只是举一个例子,可以参考一下:</p>
+<ol>
+<li><p>cd Desktop&#x2F; 切换到桌面</p>
+</li>
+<li><p>mkdir ProtoBuf 在桌面创建一个文件夹，文件夹名为ProtoBuf</p>
+</li>
+<li><p>创建一个proto文件,内容举例:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">package web.platform;</span><br><span class="line">message login_account_request</span><br><span class="line">&#123;</span><br><span class="line">required bytes account = 1;</span><br><span class="line">optional bytes passwd = 2;</span><br><span class="line">&#125;</span><br><span class="line">message login_account_response</span><br><span class="line">&#123;</span><br><span class="line">required int32 ec = 1;</span><br><span class="line">optional bytes token = 2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li><p>文件一定要以.proto格式保存</p>
+</li>
+<li><p>proto的内容格式一定要正确，可以将自己创建出来的文本格式和示例的进行对比，package有没有拼写错误，需要分号的地方是否有分号，包括大括号的格式。如果内容格式有问题，可能会导致后面无法生成正确的OC文件</p>
+<h3 id="生成OC文件"><a href="#生成OC文件" class="headerlink" title="生成OC文件"></a>生成OC文件</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd ~/Desktop/ProtoBuf</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">protoc --plugin=/usr/local/bin/protoc-gen-objc person.proto --objc_out=&quot;./&quot;</span><br></pre></td></tr></table></figure>
+
+<p>执行完成后就在ProtoBuf的文件夹下面生成了OC文件</p>
+<h3 id="将protobuf使用到工程中"><a href="#将protobuf使用到工程中" class="headerlink" title="将protobuf使用到工程中"></a>将protobuf使用到工程中</h3><h4 id="使用pod导入"><a href="#使用pod导入" class="headerlink" title="使用pod导入"></a>使用pod导入</h4><p>在pod文件中写入</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pod &#x27;Protobuf&#x27;, &#x27;~&gt; 3.3&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>然后执行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pod install</span><br></pre></td></tr></table></figure>
+
+<p>最后把你生成的protobuf的添加到工程中就可以啦 : )</p>
+</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>protobuf</tag>
+      </tags>
+  </entry>
+</search>
