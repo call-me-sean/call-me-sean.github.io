@@ -20,15 +20,21 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Sean Blog">
-<meta property="og:url" content="http://example.com/tags/Tool/index.html">
+  <meta property="og:type" content="article">
+<meta property="og:title" content="classes-and-metaclasses">
+<meta property="og:url" content="http://example.com/2020/02/14/classes-and-metaclasses/index.html">
 <meta property="og:site_name" content="Sean Blog">
 <meta property="og:locale">
+<meta property="og:image" content="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2020/02/ClassAndMetaclass.png">
+<meta property="og:image" content="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2020/02/ClassAndMetaclass.png">
+<meta property="article:published_time" content="2020-02-14T11:30:33.000Z">
+<meta property="article:modified_time" content="2022-05-04T15:20:53.988Z">
 <meta property="article:author" content="Sean">
+<meta property="article:tag" content="Objectice-C">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2020/02/ClassAndMetaclass.png">
 
-<link rel="canonical" href="http://example.com/tags/Tool/">
+<link rel="canonical" href="http://example.com/2020/02/14/classes-and-metaclasses/">
 
 
 <script id="page-configurations">
@@ -36,12 +42,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-Hans'
   };
 </script>
 
-  <title>Tag: Tool | Sean Blog</title>
+  <title>classes-and-metaclasses | Sean Blog</title>
   
 
 
@@ -167,51 +173,100 @@
         <div class="content-wrap">
           
 
-          <div class="content tag">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <h2 class="collection-header">Tool
-          <small>Tag</small>
-        </h2>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/02/14/classes-and-metaclasses/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Sean">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sean Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          classes-and-metaclasses
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-02-14 19:30:33" itemprop="dateCreated datePublished" datetime="2020-02-14T19:30:33+08:00">2020-02-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-05-04 23:20:53" itemprop="dateModified" datetime="2022-05-04T23:20:53+08:00">2022-05-04</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2017</span>
+        <p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2020/02/ClassAndMetaclass.png" alt="ClassesAndMetaclasses"></p>
+<span id="more"></span>
+
+<p>Objective-C是一个基于类(calss)的对象系统，每一个对象都是某个类(calss)的实例。对象的isa指针指向他的class，这个class描述的对象的数据：allocation size，ivar类型，以及内存布局。类(calss)还描述了对象的行为：选择子是否被响应，以及method的实现地址。</p>
+<p>类(calss)的方法列表是实例方法的集合，即对象响应的选择子。当你给实例对象发送消息时，objc_msgSend()会查找对象的类(calss)(和超类(如果有))的方法列表，来决定哪一个方法会被调用。</p>
+<p>每一个Objective-c的class也是一个对象，它有isa指针和其他数据，并且可以响应选择子。当你调用类方法(+号方法)时，比如[NSObject alloc]，实际上是向该类的类对象发送消息.</p>
+<p>由于类是一个对象，因此它必须是其他类的实例：元类(metaclass)。元类是类对象的描述，就像类是普通对象的描述一样。元类的方法列表是类方法(+号方法)：类对象响应的选择子。当你想向类(元类的实例)发送消息时，objc_msgSend()会浏览元类的方法列表(和超类(如果有)),以及确定要调用的方法。类方法由元类代表类对象描述，就像实例方法由类代表实例对象描述是一样的。</p>
+<p>那元类呢？它会一直向下延伸吗？答案是否定的。metaclass是root metaclass的实例。root metaclass本身就是root metaclass的实例(自指)。isa指向链在此处以一个循环结束。因为现实世界中，没有人会给元类对象发送消息。</p>
+<p>更重要的是元类的super类(超类)。元类的super链和类的super链是平行的。因此，类方法和实例方法是并行继承的。root metaclass的super类是root class，因此每个类对象都会响应根类的实例方法。比如：[NSObject copy]。最后，与任何其他对象一样，类对象及其子类都是root class的实例。</p>
+<p><img src="https://sean-1300081233.cos.ap-beijing.myqcloud.com/2020/02/ClassAndMetaclass.png" alt="ClassesAndMetaclasses"></p>
+<p>你现在感到困惑吗？上图可能会对你有所帮助。请记住，当消息发送给任何对象的时候，方法查找从该对象的isa指针开始，然后查找继续super链。实例方法由类定义，类方法由metaclass和root class定义。</p>
+<p>在计算机科学语言理论中，类和元类的层次结构可以更自由，具有更深的元类链和从任何单个元类实例化的多个类。Objective-C使用元类来实现诸如类方法之类的实际目标。但另一方面却趋向于隐藏元类。例如：[NSObject class]和[NSObject self]是相同的，从形式上讲，它应该返回NSObject-&gt;isa指向的元类。Objective-C在这里采取了折中的方案。在Objective-C变得太meta之前，限制了类的模式。</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2017-06-11T21:30:02+08:00"
-              content="2017-06-11">
-          06-11
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Objectice-C/" rel="tag"># Objectice-C</a>
+          </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2017/06/11/how-to-make-a-cool-terminal/" itemprop="url">
-            <span itemprop="name">配置一个炫酷的终端</span>
-          </a>
-      </div>
+        
 
-    </header>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/06/11/how-to-make-a-cool-terminal/" rel="prev" title="配置一个炫酷的终端">
+      <i class="fa fa-chevron-left"></i> 配置一个炫酷的终端
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/03/Detect-and-diagnose-memory-issues/" rel="next" title="Detect and diagnose memory issues 检测和诊断 iOS 内存问题">
+      Detect and diagnose memory issues 检测和诊断 iOS 内存问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
   </article>
-
-    </div>
-  </div>
   
   
-  
-
   
 
 
